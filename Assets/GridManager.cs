@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
+    [SerializeField] private GameObject tetrominoPrefab;
     [SerializeField] private GameObject blockPrefab;
     public int width = 10;
     public int height = 20;
     public Transform[,] grid;
-    private float gridSizeScale;
+    public float gridSizeScale;
 
     private void Start()
     {
@@ -17,6 +18,21 @@ public class GridManager : MonoBehaviour
     private void InitGrid()
     {
         grid = new Transform[width, height];
+    }
+
+    public void AddBlockToGrid(Transform block)
+    {
+        Vector2 pos = block.position; 
+        float xPos = pos.x / gridSizeScale;
+        float yPos = pos.y / gridSizeScale;
+        grid[(int)xPos, (int)yPos] = block;
+        SpawnTetromino();
+    }
+
+    private void SpawnTetromino()
+    {
+        GameObject tetrominoInstance = Instantiate(tetrominoPrefab);
+        tetrominoInstance.transform.position = new Vector3(2, 5, 0);
     }
 
     public bool IsInsideGrid(Vector2 pos)

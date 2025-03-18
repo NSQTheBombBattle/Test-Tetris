@@ -24,20 +24,19 @@ public class Tetromino : MonoBehaviour
 
     void Move(Vector2 direction)
     {
-        transform.position += (Vector3)direction;
-        if (!ValidMove()) transform.position -= (Vector3)direction;
+        transform.position += (Vector3)direction * gridManager.gridSizeScale;
+        if (!ValidMove()) transform.position -= (Vector3)direction * gridManager.gridSizeScale;
     }
 
     void MoveDown()
     {
-        transform.position += Vector3.down;
+        transform.position += Vector3.down * gridManager.gridSizeScale;
         if (!ValidMove())
         {
-            transform.position -= Vector3.down;
+            transform.position -= Vector3.down * gridManager.gridSizeScale;
             AddToGrid();
             //CheckForLineClear();
             this.enabled = false;
-            //FindObjectOfType<Spawner>().SpawnNewTetromino();
         }
     }
 
