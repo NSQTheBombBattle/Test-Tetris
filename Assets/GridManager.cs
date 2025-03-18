@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GridManager : MonoBehaviour
@@ -13,6 +14,7 @@ public class GridManager : MonoBehaviour
     {
         InitGrid();
         gridSizeScale = Mathf.Min(blockPrefab.GetComponent<SpriteRenderer>().bounds.size.x, blockPrefab.GetComponent<SpriteRenderer>().bounds.size.y);
+        SpawnTetromino();
     }
 
     private void InitGrid()
@@ -20,12 +22,17 @@ public class GridManager : MonoBehaviour
         grid = new Transform[width, height];
     }
 
-    public void AddBlockToGrid(Transform block)
+    public void AddBlockToGrid(List<Transform> blockList)
     {
-        Vector2 pos = block.position; 
-        float xPos = pos.x / gridSizeScale;
-        float yPos = pos.y / gridSizeScale;
-        grid[(int)xPos, (int)yPos] = block;
+        for(int i = blockList.Count-1; i >= 0; i--)
+        {
+            Vector2 pos = blockList[i].position;
+            float xPos = pos.x / gridSizeScale;
+            float yPos = pos.y / gridSizeScale;
+            grid[(int)xPos, (int)yPos] = blockList[i];
+            blockList[i].SetParent(this.transform);
+        }
+        CheckForLineClear();
         SpawnTetromino();
     }
 
@@ -33,6 +40,7 @@ public class GridManager : MonoBehaviour
     {
         GameObject tetrominoInstance = Instantiate(tetrominoPrefab);
         tetrominoInstance.transform.position = new Vector3(2, 5, 0);
+        tetrominoInstance.GetComponent<Tetromino>().gridManager = this;
     }
 
     public bool IsInsideGrid(Vector2 pos)
@@ -48,7 +56,7 @@ public class GridManager : MonoBehaviour
         return grid[(int)xPos, (int)yPos] != null;
     }
 
-    public void CheckForLineClear()
+    private void CheckForLineClear()
     {
         for (int y = height - 1; y >= 0; y--)
         {

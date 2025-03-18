@@ -453,6 +453,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tetromino
       objectReference: {fileID: 0}
+    - target: {fileID: 4354999425665213100, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6043143696897620241, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
       propertyPath: gridManager
       value: 

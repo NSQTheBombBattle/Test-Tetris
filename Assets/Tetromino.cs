@@ -5,8 +5,18 @@ using UnityEngine;
 public class Tetromino : MonoBehaviour
 {
     public GridManager gridManager;
+    private List<Transform> childBlocks = new List<Transform>();
     private float fallTime = 0.8f; // Time before falling
     private float previousTime;
+
+    private void Start()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+            childBlocks.Add(child);
+        }
+    }
 
     void Update()
     {
@@ -34,9 +44,8 @@ public class Tetromino : MonoBehaviour
         if (!ValidMove())
         {
             transform.position -= Vector3.down * gridManager.gridSizeScale;
-            AddToGrid();
-            //CheckForLineClear();
-            this.enabled = false;
+            gridManager.AddBlockToGrid(childBlocks);
+            Destroy(this.gameObject);
         }
     }
 
@@ -55,15 +64,6 @@ public class Tetromino : MonoBehaviour
             if (gridManager.IsGridOccupied(pos)) return false;
         }
         return true;
-    }
-
-    void AddToGrid()
-    {
-        foreach (Transform child in transform)
-        {
-            Vector2 pos = child.position;
-            gridManager.grid[(int)pos.x, (int)pos.y] = child;
-        }
     }
 }
 
