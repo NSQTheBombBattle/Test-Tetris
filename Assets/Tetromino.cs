@@ -80,8 +80,22 @@ public class Tetromino : MonoBehaviour
 
     void Rotate()
     {
-        transform.Rotate(0, 0, 90);
-        if (!ValidMove()) transform.Rotate(0, 0, -90);
+        for (int i = 0; i < childBlocks.Count; i++)
+        {
+            Vector2 originalOffset = childBlocks[i].GetComponent<Block>().indexOffset;
+            childBlocks[i].GetComponent<Block>().indexOffset = new Vector2(originalOffset.y, -originalOffset.x);
+            childBlocks[i].transform.localPosition = childBlocks[i].GetComponent<Block>().indexOffset * gridManager.gridSizeScale;
+        }
+        if (!ValidMove()) 
+        {
+            for (int i = 0; i < childBlocks.Count; i++)
+            {
+                Vector2 originalOffset = childBlocks[i].GetComponent<Block>().indexOffset;
+                childBlocks[i].GetComponent<Block>().indexOffset = new Vector2(-originalOffset.y, originalOffset.x);
+                childBlocks[i].transform.localPosition = childBlocks[i].GetComponent<Block>().indexOffset * gridManager.gridSizeScale;
+            }
+        }
+
         transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
     }
 
