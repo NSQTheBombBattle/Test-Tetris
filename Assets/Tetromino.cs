@@ -7,7 +7,7 @@ public class Tetromino : MonoBehaviour
     public GridManager gridManager;
     private Vector2Int currentPositionIndex;
     private List<Transform> childBlocks = new List<Transform>();
-    private float fallTime = 0.8f; // Time before falling
+    private float fallTime = 0.8f;
     private float previousTime;
 
     private void Start()
@@ -101,9 +101,9 @@ public class Tetromino : MonoBehaviour
 
     bool ValidMove()
     {
-        foreach (Transform child in transform)
+        for (int i = 0; i < childBlocks.Count; i++)
         {
-            Vector2 posIndex = new Vector2(child.GetComponent<Block>().indexOffset.x + currentPositionIndex.x, child.GetComponent<Block>().indexOffset.y + currentPositionIndex.y);
+            Vector2 posIndex = new Vector2(childBlocks[i].GetComponent<Block>().indexOffset.x + currentPositionIndex.x, childBlocks[i].GetComponent<Block>().indexOffset.y + currentPositionIndex.y);
             if (!gridManager.IsInsideGrid(posIndex)) return false;
             if (gridManager.IsGridOccupied(posIndex)) return false;
         }
