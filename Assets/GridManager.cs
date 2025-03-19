@@ -23,14 +23,12 @@ public class GridManager : MonoBehaviour
         grid = new Transform[width, height];
     }
 
-    public void AddBlockToGrid(List<Transform> blockList)
+    public void AddBlockToGrid(Vector2Int currentIndex, List<Transform> blockList)
     {
         for(int i = blockList.Count-1; i >= 0; i--)
         {
-            Vector2 pos = blockList[i].position;
-            float xPos = pos.x / gridSizeScale;
-            float yPos = pos.y / gridSizeScale;
-            grid[(int)xPos, (int)yPos] = blockList[i];
+            Vector2 pos = currentIndex + blockList[i].GetComponent<Block>().indexOffset;
+            grid[(int)pos.x, (int)pos.y] = blockList[i];
             blockList[i].SetParent(this.transform);
         }
         CheckForLineClear();
@@ -48,7 +46,6 @@ public class GridManager : MonoBehaviour
     {
         GameObject randomTetromino = tetrominoPrefabs[Random.Range(0, tetrominoPrefabs.Count)];
         GameObject tetrominoInstance = Instantiate(randomTetromino);
-        tetrominoInstance.transform.position = new Vector3(2, 8, 0);
         tetrominoInstance.GetComponent<Tetromino>().gridManager = this;
         tetrominoInstance.GetComponent<Tetromino>().InitTetromino(new Vector2Int(4, 20));
     }

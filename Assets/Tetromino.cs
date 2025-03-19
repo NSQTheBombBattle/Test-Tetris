@@ -62,7 +62,7 @@ public class Tetromino : MonoBehaviour
         {
             currentPositionIndex -= new Vector2Int(0, -1);
             transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
-            gridManager.AddBlockToGrid(childBlocks);
+            gridManager.AddBlockToGrid(currentPositionIndex, childBlocks);
             Destroy(this.gameObject);
         }
     }

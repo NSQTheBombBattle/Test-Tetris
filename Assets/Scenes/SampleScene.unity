@@ -160,6 +160,7 @@ MonoBehaviour:
   - {fileID: 4354999425665213100, guid: 5ea57ff1392402b4a8edac6736c5d147, type: 3}
   - {fileID: 4354999425665213100, guid: b318f8d22ce0f274fa466add49c92c9f, type: 3}
   blockPrefab: {fileID: 4713041661065697372, guid: 4acf7675f8cc3c8479ddd85bf87d78fd, type: 3}
+  gameOverHeight: 20
   width: 10
   height: 25
   gridSizeScale: 0
