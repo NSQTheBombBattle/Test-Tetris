@@ -6,7 +6,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] private List<GameObject> tetrominoPrefabs;
     [SerializeField] private GameObject blockPrefab;
     public int width = 10;
-    public int height = 20;
+    public int height = 25;
     public Transform[,] grid;
     public float gridSizeScale;
 
@@ -42,6 +42,7 @@ public class GridManager : MonoBehaviour
         GameObject tetrominoInstance = Instantiate(randomTetromino);
         tetrominoInstance.transform.position = new Vector3(2, 8, 0);
         tetrominoInstance.GetComponent<Tetromino>().gridManager = this;
+        tetrominoInstance.GetComponent<Tetromino>().InitTetromino(new Vector2Int(4, 20));
     }
 
     public bool IsInsideGrid(Vector2 pos)
