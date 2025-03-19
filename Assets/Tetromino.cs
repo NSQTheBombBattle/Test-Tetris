@@ -21,6 +21,7 @@ public class Tetromino : MonoBehaviour
         {
             Transform child = transform.GetChild(i);
             childBlocks.Add(child);
+            child.GetComponent<Block>().indexOffset = new Vector2(child.localPosition.x / gridManager.gridSizeScale, child.localPosition.y / gridManager.gridSizeScale);
         }
         currentPositionIndex = spawnIndex;
         transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
@@ -35,13 +36,9 @@ public class Tetromino : MonoBehaviour
             previousTime = Time.time;
         }
 
-        //if (Input.GetKeyDown(KeyCode.LeftArrow)) Move(Vector2.left);
-        //if (Input.GetKeyDown(KeyCode.RightArrow)) Move(Vector2.right);
-        //if (Input.GetKeyDown(KeyCode.DownArrow)) MoveDown();
-        //if (Input.GetKeyDown(KeyCode.UpArrow)) Rotate();
         if (Input.GetKeyDown(KeyCode.LeftArrow)) MoveTetromino(new Vector2Int(-1,0));
         if (Input.GetKeyDown(KeyCode.RightArrow)) MoveTetromino(new Vector2Int(1, 0));
-        if (Input.GetKeyDown(KeyCode.DownArrow)) MoveTetromino(new Vector2Int(0, -1));
+        if (Input.GetKeyDown(KeyCode.DownArrow)) MoveDown();
         if (Input.GetKeyDown(KeyCode.UpArrow)) Rotate();
     }
 
@@ -58,11 +55,12 @@ public class Tetromino : MonoBehaviour
 
     void MoveDown()
     {
-        currentPositionIndex.y -= 1;
+        //MoveTetromino(new Vector2Int(0, -1));
+        currentPositionIndex += new Vector2Int(0,-1);
         transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
         if (!ValidMove())
         {
-            currentPositionIndex.y += 1;
+            currentPositionIndex -= new Vector2Int(0, -1);
             transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
             gridManager.AddBlockToGrid(childBlocks);
             Destroy(this.gameObject);
@@ -91,9 +89,9 @@ public class Tetromino : MonoBehaviour
     {
         foreach (Transform child in transform)
         {
-            Vector2 pos = child.position;
-            if (!gridManager.IsInsideGrid(pos)) return false;
-            if (gridManager.IsGridOccupied(pos)) return false;
+            Vector2 posIndex = new Vector2(child.GetComponent<Block>().indexOffset.x + currentPositionIndex.x, child.GetComponent<Block>().indexOffset.y + currentPositionIndex.y);
+            if (!gridManager.IsInsideGrid(posIndex)) return false;
+            if (gridManager.IsGridOccupied(posIndex)) return false;
         }
         return true;
     }

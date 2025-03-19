@@ -45,17 +45,18 @@ public class GridManager : MonoBehaviour
         tetrominoInstance.GetComponent<Tetromino>().InitTetromino(new Vector2Int(4, 20));
     }
 
-    public bool IsInsideGrid(Vector2 pos)
+    public bool IsInsideGrid(Vector2 posIndex)
     {
-        return pos.x >= 0 && pos.x < width * gridSizeScale && pos.y >= 0;
+        return posIndex.x >= 0 && posIndex.x < width && posIndex.y >= 0;
     }
 
-    public bool IsGridOccupied(Vector2 pos)
+    public bool IsGridOccupied(Vector2 posIndex)
     {
-        float xPos = pos.x / gridSizeScale;
-        float yPos = pos.y / gridSizeScale;
+        float roundingFactor = 1 / gridSizeScale;
+        float xPos = Mathf.Round(posIndex.x * roundingFactor) / roundingFactor;
+        float yPos = Mathf.Round(posIndex.y * roundingFactor) / roundingFactor;
 
-        return grid[(int)xPos, (int)yPos] != null;
+        return grid[(int)posIndex.x, (int)posIndex.y] != null;
     }
 
     private void CheckForLineClear()
