@@ -5,9 +5,9 @@ using UnityEngine;
 public class Tetromino : MonoBehaviour
 {
     public GridManager gridManager;
+    [SerializeField] private float fallTime = 0.8f;
     private Vector2Int currentPositionIndex;
     private List<Transform> childBlocks = new List<Transform>();
-    private float fallTime = 0.8f;
     private float previousTime;
 
     private void Start()
