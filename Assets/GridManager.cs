@@ -5,6 +5,7 @@ public class GridManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> tetrominoPrefabs;
     [SerializeField] private GameObject blockPrefab;
+    [SerializeField] private int gameOverHeight = 20;
     public int width = 10;
     public int height = 25;
     public Transform[,] grid;
@@ -33,7 +34,14 @@ public class GridManager : MonoBehaviour
             blockList[i].SetParent(this.transform);
         }
         CheckForLineClear();
-        SpawnTetromino();
+        if (CheckForLineExceeded())
+        {
+            Debug.Log("Game Over!");
+        }
+        else
+        {
+            SpawnTetromino();
+        }       
     }
 
     private void SpawnTetromino()
@@ -69,6 +77,16 @@ public class GridManager : MonoBehaviour
                 MoveAllLinesDown(y);
             }
         }
+    }
+
+    private bool CheckForLineExceeded()
+    {
+        for (int y = gameOverHeight; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+                if (grid[x, y] != null) return true;
+        }
+        return false;
     }
 
     bool IsLineComplete(int y)
