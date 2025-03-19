@@ -60,10 +60,6 @@ public class GridManager : MonoBehaviour
 
     public bool IsGridOccupied(Vector2 posIndex)
     {
-        float roundingFactor = 1 / gridSizeScale;
-        float xPos = Mathf.Round(posIndex.x * roundingFactor) / roundingFactor;
-        float yPos = Mathf.Round(posIndex.y * roundingFactor) / roundingFactor;
-
         return grid[(int)posIndex.x, (int)posIndex.y] != null;
     }
 
