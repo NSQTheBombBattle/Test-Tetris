@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,10 +8,12 @@ public class Tetromino : MonoBehaviour
     private Vector2Int currentPositionIndex;
     private List<Transform> childBlocks = new List<Transform>();
     private float previousTime;
+    private bool isHoldingDown;
+    private float holdTimer;
 
     private void Start()
     {
-        
+
     }
 
     public void InitTetromino(Vector2Int spawnIndex)
@@ -36,10 +37,23 @@ public class Tetromino : MonoBehaviour
             previousTime = Time.time;
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) MoveTetromino(new Vector2Int(-1,0));
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) MoveTetromino(new Vector2Int(-1, 0));
         if (Input.GetKeyDown(KeyCode.RightArrow)) MoveTetromino(new Vector2Int(1, 0));
-        if (Input.GetKeyDown(KeyCode.DownArrow)) MoveDown();
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            isHoldingDown = true;
+            MoveDown();
+        }
         if (Input.GetKeyDown(KeyCode.UpArrow)) Rotate();
+
+        if (Input.GetKeyUp(KeyCode.DownArrow))
+        {
+            isHoldingDown = false;
+            holdTimer = 0;
+            fallTime = 0.8f;
+        }
+
+        CheckMoveDownHold();
     }
 
     void Move(Vector2 direction)
@@ -56,7 +70,7 @@ public class Tetromino : MonoBehaviour
     void MoveDown()
     {
         //MoveTetromino(new Vector2Int(0, -1));
-        currentPositionIndex += new Vector2Int(0,-1);
+        currentPositionIndex += new Vector2Int(0, -1);
         transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
         if (!ValidMove())
         {
@@ -64,6 +78,18 @@ public class Tetromino : MonoBehaviour
             transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
             gridManager.AddBlockToGrid(currentPositionIndex, childBlocks);
             Destroy(this.gameObject);
+        }
+    }
+
+    private void CheckMoveDownHold()
+    {
+        if (isHoldingDown)
+        {
+            holdTimer += Time.deltaTime;
+            if (holdTimer >= 0.25f)
+            {
+                fallTime = 0.05f;
+            }
         }
     }
 
@@ -86,7 +112,7 @@ public class Tetromino : MonoBehaviour
             childBlocks[i].GetComponent<Block>().indexOffset = new Vector2(originalOffset.y, -originalOffset.x);
             childBlocks[i].transform.localPosition = childBlocks[i].GetComponent<Block>().indexOffset * gridManager.gridSizeScale;
         }
-        if (!ValidMove()) 
+        if (!ValidMove())
         {
             for (int i = 0; i < childBlocks.Count; i++)
             {
