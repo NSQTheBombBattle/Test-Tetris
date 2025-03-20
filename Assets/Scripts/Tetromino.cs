@@ -9,14 +9,14 @@ public class Tetromino : MonoBehaviour
     [SerializeField] private float holdTimeForFastFall = 0.25f;
     private Vector2Int currentPositionIndex;
     private List<Transform> childBlocks = new List<Transform>();
-    private float previousTime;
     private bool isHoldingDown;
+    private float fallTimer;
     private float holdTimer;
     private float currentFallTime;
 
     private void Start()
     {
-
+        currentFallTime = fallTime;
     }
 
     public void InitTetromino(Vector2Int spawnIndex)
@@ -34,10 +34,10 @@ public class Tetromino : MonoBehaviour
 
     void Update()
     {
-        if (Time.time - previousTime > currentFallTime)
+        fallTimer += Time.deltaTime;
+        if (fallTimer >= currentFallTime)
         {
             MoveDown();
-            previousTime = Time.time;
         }
 
         if (Input.GetKeyDown(KeyCode.UpArrow)) Rotate();
@@ -72,6 +72,7 @@ public class Tetromino : MonoBehaviour
 
     void MoveDown()
     {
+        fallTimer = 0;
         currentPositionIndex += new Vector2Int(0, -1);
         transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
         if (!ValidMove())
