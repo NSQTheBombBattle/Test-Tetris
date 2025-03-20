@@ -37,6 +37,7 @@ public class Tetromino : MonoBehaviour
             previousTime = Time.time;
         }
 
+        if (Input.GetKeyDown(KeyCode.UpArrow)) Rotate();
         if (Input.GetKeyDown(KeyCode.LeftArrow)) MoveTetromino(new Vector2Int(-1, 0));
         if (Input.GetKeyDown(KeyCode.RightArrow)) MoveTetromino(new Vector2Int(1, 0));
         if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -44,7 +45,6 @@ public class Tetromino : MonoBehaviour
             isHoldingDown = true;
             MoveDown();
         }
-        if (Input.GetKeyDown(KeyCode.UpArrow)) Rotate();
 
         if (Input.GetKeyUp(KeyCode.DownArrow))
         {
