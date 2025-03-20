@@ -5,11 +5,14 @@ public class Tetromino : MonoBehaviour
 {
     public GridManager gridManager;
     [SerializeField] private float fallTime = 0.8f;
+    [SerializeField] private float fastFallTime = 0.05f;
+    [SerializeField] private float holdTimeForFastFall = 0.25f;
     private Vector2Int currentPositionIndex;
     private List<Transform> childBlocks = new List<Transform>();
     private float previousTime;
     private bool isHoldingDown;
     private float holdTimer;
+    private float currentFallTime;
 
     private void Start()
     {
@@ -31,7 +34,7 @@ public class Tetromino : MonoBehaviour
 
     void Update()
     {
-        if (Time.time - previousTime > fallTime)
+        if (Time.time - previousTime > currentFallTime)
         {
             MoveDown();
             previousTime = Time.time;
@@ -50,7 +53,7 @@ public class Tetromino : MonoBehaviour
         {
             isHoldingDown = false;
             holdTimer = 0;
-            fallTime = 0.8f;
+            currentFallTime = fallTime;
         }
 
         CheckMoveDownHold();
@@ -69,7 +72,6 @@ public class Tetromino : MonoBehaviour
 
     void MoveDown()
     {
-        //MoveTetromino(new Vector2Int(0, -1));
         currentPositionIndex += new Vector2Int(0, -1);
         transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
         if (!ValidMove())
@@ -86,9 +88,9 @@ public class Tetromino : MonoBehaviour
         if (isHoldingDown)
         {
             holdTimer += Time.deltaTime;
-            if (holdTimer >= 0.25f)
+            if (holdTimer >= holdTimeForFastFall)
             {
-                fallTime = 0.05f;
+                currentFallTime = fastFallTime;
             }
         }
     }
