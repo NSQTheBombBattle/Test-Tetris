@@ -27,13 +27,34 @@ public class TetrominoSpawner : MonoBehaviour
     public void SpawnTetromino()
     {
         GameObject tetrominoInstance = Instantiate(tetrominoPrefab, gridManager.transform);
+        int biggestX = 0;
+        int biggestY = 0;
+        for (int i = 0; i < toggleList.Count; i++)
+        {
+            if (toggleList[i].isOn == false)
+                continue;
+            int xIndex = i % GRID_SIZE;
+            int yIndex = i / GRID_SIZE;
+            if(xIndex > biggestX)
+            {
+                biggestX = xIndex;
+            }
+            if (yIndex > biggestY)
+            {
+                biggestY = yIndex;
+            }
+        }
+        float xOffset = Mathf.CeilToInt(biggestX / 2f) * gridManager.gridSizeScale;
+        float yOffset = Mathf.CeilToInt(biggestY / 2f) * gridManager.gridSizeScale;
+        Debug.Log(xOffset);
+        Debug.Log(yOffset);
         for (int i = 0; i < toggleList.Count; i++)
         {
             if (toggleList[i].isOn == false)
                 continue;
             GameObject blockInstance = Instantiate(blockPrefab, tetrominoInstance.transform);
-            float xPos = i % GRID_SIZE * gridManager.gridSizeScale;
-            float yPos = i / GRID_SIZE * gridManager.gridSizeScale;
+            float xPos = (i % GRID_SIZE * gridManager.gridSizeScale) - xOffset;
+            float yPos = (i / GRID_SIZE * gridManager.gridSizeScale) - yOffset;
             blockInstance.transform.localPosition = new Vector2(xPos, yPos);
         }
 
