@@ -6,6 +6,8 @@ public class GridManager : MonoBehaviour
     [SerializeField] private List<GameObject> tetrominoPrefabs;
     [SerializeField] private GameObject blockPrefab;
     [SerializeField] private int gameOverHeight = 20;
+    [SerializeField] private GameObject blockIndicatorPrefab;
+    [SerializeField] private Transform blockIndicatorParent;
     public int width = 10;
     public int height = 25;
     public Transform[,] grid;
@@ -14,13 +16,21 @@ public class GridManager : MonoBehaviour
     private void Start()
     {
         InitGrid();
-        gridSizeScale = Mathf.Min(blockPrefab.GetComponent<SpriteRenderer>().bounds.size.x, blockPrefab.GetComponent<SpriteRenderer>().bounds.size.y);
-        //SpawnTetromino();
+        SpawnTetromino();
     }
 
     private void InitGrid()
     {
+        gridSizeScale = Mathf.Min(blockPrefab.GetComponent<SpriteRenderer>().bounds.size.x, blockPrefab.GetComponent<SpriteRenderer>().bounds.size.y);
         grid = new Transform[width, height];
+        for(int i = 0; i <= gameOverHeight; i++)
+        {
+            for(int j = 0; j < width; j++)
+            {
+                GameObject indicatorInstance = Instantiate(blockIndicatorPrefab, blockIndicatorParent);
+                indicatorInstance.transform.position = new Vector3(j * gridSizeScale, i * gridSizeScale, 0);
+            }
+        }
     }
 
     public void AddBlockToGrid(Vector2Int currentIndex, List<Transform> blockList)
@@ -38,7 +48,7 @@ public class GridManager : MonoBehaviour
         }
         else
         {
-            //SpawnTetromino();
+            SpawnTetromino();
         }       
     }
 
