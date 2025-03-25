@@ -46,8 +46,6 @@ public class TetrominoSpawner : MonoBehaviour
         }
         float xOffset = Mathf.CeilToInt(biggestX / 2f) * gridManager.gridSizeScale;
         float yOffset = Mathf.CeilToInt(biggestY / 2f) * gridManager.gridSizeScale;
-        Debug.Log(xOffset);
-        Debug.Log(yOffset);
         for (int i = 0; i < toggleList.Count; i++)
         {
             if (toggleList[i].isOn == false)
