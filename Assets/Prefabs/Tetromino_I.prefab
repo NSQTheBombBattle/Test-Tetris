@@ -49,6 +49,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridManager: {fileID: 0}
+  fallTime: 0.8
+  fastFallTime: 0.05
+  holdTimeForFastFall: 0.25
 --- !u!1001 &473075744036853897
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -15,7 +15,7 @@ public class GridManager : MonoBehaviour
     {
         InitGrid();
         gridSizeScale = Mathf.Min(blockPrefab.GetComponent<SpriteRenderer>().bounds.size.x, blockPrefab.GetComponent<SpriteRenderer>().bounds.size.y);
-        SpawnTetromino();
+        //SpawnTetromino();
     }
 
     private void InitGrid()
@@ -38,7 +38,7 @@ public class GridManager : MonoBehaviour
         }
         else
         {
-            SpawnTetromino();
+            //SpawnTetromino();
         }       
     }
 
