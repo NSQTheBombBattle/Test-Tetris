@@ -152,35 +152,20 @@ public class GridManager : MonoBehaviour
             {
                 if (Random.Range(0, 1f) > chanceToOccupied)
                     continue;
-                if (y == tempGridSize - 1)
+                if (y == tempGridSize - 1 || (y >= highestY || occupiedTiles.Contains((x, y + 1))))
                 {
                     GameObject instance = Instantiate(blockPrefab);
                     instance.transform.position = new Vector2(x, y);
                     tempObjects.Add(instance);
                     occupiedTiles.Add((x, y));
-                    if (y > highestY)
-                    {
-                        highestY = y;
-                    }
-                    Debug.Log(x.ToString() + y.ToString());
-                }
-                else
-                {
-                    if (y < highestY && !occupiedTiles.Contains((x, y + 1)))
-                    {
-                        continue;
-                    }
-                    GameObject instance = Instantiate(blockPrefab);
-                    instance.transform.position = new Vector2(x, y);
-                    tempObjects.Add(instance);
-                    occupiedTiles.Add((x, y));
-                    if (y > highestY)
-                    {
-                        highestY = y;
-                    }
-                    Debug.Log(x.ToString() + y.ToString());
-                }
 
+                    if (y > highestY)
+                    {
+                        highestY = y;
+                    }
+
+                    Debug.Log(x.ToString() + y.ToString());
+                }
             }
         }
     }
