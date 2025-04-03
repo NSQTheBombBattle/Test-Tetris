@@ -164,8 +164,6 @@ public class GridManager : MonoBehaviour
                     {
                         highestY = y;
                     }
-
-                    Debug.Log(x.ToString() + y.ToString());
                 }
                 else
                 {
