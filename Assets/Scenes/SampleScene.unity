@@ -280,8 +280,8 @@ MonoBehaviour:
   gameOverHeight: 20
   blockIndicatorPrefab: {fileID: 4713041661065697372, guid: 881a842b07084824e83318ba84e670ca, type: 3}
   blockIndicatorParent: {fileID: 710944422}
-  width: 10
-  height: 25
+  gridSize: 4
+  gridAmount: 2
   gridSizeScale: 0
 --- !u!4 &127685932
 Transform:
