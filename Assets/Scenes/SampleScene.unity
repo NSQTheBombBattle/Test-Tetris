@@ -276,6 +276,7 @@ MonoBehaviour:
   - {fileID: 4354999425665213100, guid: 5ea57ff1392402b4a8edac6736c5d147, type: 3}
   - {fileID: 4354999425665213100, guid: b318f8d22ce0f274fa466add49c92c9f, type: 3}
   blockPrefab: {fileID: 4713041661065697372, guid: 4acf7675f8cc3c8479ddd85bf87d78fd, type: 3}
+  blockPrefab2: {fileID: 4713041661065697372, guid: 895b50b085b6eaf4ebe2c639d3bc501a, type: 3}
   gameOverHeight: 20
   blockIndicatorPrefab: {fileID: 4713041661065697372, guid: 881a842b07084824e83318ba84e670ca, type: 3}
   blockIndicatorParent: {fileID: 710944422}
@@ -2565,10 +2566,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
