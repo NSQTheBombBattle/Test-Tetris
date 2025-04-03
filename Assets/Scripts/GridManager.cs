@@ -5,6 +5,7 @@ public class GridManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> tetrominoPrefabs;
     [SerializeField] private GameObject blockPrefab;
+    [SerializeField] private GameObject blockPrefab2;
     [SerializeField] private int gameOverHeight = 20;
     [SerializeField] private GameObject blockIndicatorPrefab;
     [SerializeField] private Transform blockIndicatorParent;
@@ -142,9 +143,9 @@ public class GridManager : MonoBehaviour
         }
         tempObjects.Clear();
 
-        int tempGridSize = 3;
+        int tempGridSize = 4;
         List<(int, int)> occupiedTiles = new List<(int, int)>();
-        float chanceToOccupied = 0.4f;
+        float chanceToOccupied = 0.6f;
         int highestY = 0;
         for (int y = tempGridSize - 1; y >= 0; y--)
         {
@@ -158,7 +159,6 @@ public class GridManager : MonoBehaviour
                     instance.transform.position = new Vector2(x, y);
                     tempObjects.Add(instance);
                     occupiedTiles.Add((x, y));
-
                     if (y > highestY)
                     {
                         highestY = y;
@@ -166,6 +166,20 @@ public class GridManager : MonoBehaviour
 
                     Debug.Log(x.ToString() + y.ToString());
                 }
+            }
+        }
+
+        for (int y = tempGridSize - 1; y >= 0; y--)
+        {
+            for (int x = 0; x < tempGridSize; x++)
+            {
+                if (occupiedTiles.Contains((x, y)))
+                    continue;
+                if (y > highestY)
+                    continue;
+                GameObject instance = Instantiate(blockPrefab2);
+                instance.transform.position = new Vector2(x, y);
+                tempObjects.Add(instance);
             }
         }
     }
