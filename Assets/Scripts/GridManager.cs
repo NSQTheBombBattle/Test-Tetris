@@ -9,16 +9,17 @@ public class GridManager : MonoBehaviour
     [SerializeField] private int gameOverHeight = 20;
     [SerializeField] private GameObject blockIndicatorPrefab;
     [SerializeField] private Transform blockIndicatorParent;
-    public int width = 10;
-    public int height = 25;
+    [SerializeField] private int gridSize;
+    [SerializeField] private int gridAmount;
+    private int width = 10;
+    private int height = 25;
     public Transform[,] grid;
     public float gridSizeScale;
-    private List<(int, int)> occupiedTiles = new List<(int, int)>();
     private List<GameObject> tempObjects = new List<GameObject>();
 
     private void Start()
     {
-        //InitGrid();
+        InitGrid();
         //SpawnTetromino();
     }
 
@@ -32,6 +33,7 @@ public class GridManager : MonoBehaviour
 
     private void InitGrid()
     {
+        width = gridSize * gridAmount;
         gridSizeScale = Mathf.Min(blockPrefab.GetComponent<SpriteRenderer>().bounds.size.x, blockPrefab.GetComponent<SpriteRenderer>().bounds.size.y);
         grid = new Transform[width, height];
         for (int i = 0; i <= gameOverHeight; i++)
@@ -151,9 +153,8 @@ public class GridManager : MonoBehaviour
         {
             for (int x = 0; x < tempGridSize; x++)
             {
-                if (Random.Range(0, 1f) > chanceToOccupied)
-                    continue;
-                if (y == tempGridSize - 1 || (y >= highestY || occupiedTiles.Contains((x, y + 1))))
+                float radom = Random.Range(0, 1f);
+                if (radom <= chanceToOccupied && (y == tempGridSize - 1 || y >= highestY || occupiedTiles.Contains((x, y + 1))))
                 {
                     GameObject instance = Instantiate(blockPrefab);
                     instance.transform.position = new Vector2(x, y);
@@ -166,21 +167,16 @@ public class GridManager : MonoBehaviour
 
                     Debug.Log(x.ToString() + y.ToString());
                 }
+                else
+                {
+                    if (y > highestY)
+                        continue;
+                    GameObject instance = Instantiate(blockPrefab2);
+                    instance.transform.position = new Vector2(x, y);
+                    tempObjects.Add(instance);
+                }
             }
         }
-
-        for (int y = tempGridSize - 1; y >= 0; y--)
-        {
-            for (int x = 0; x < tempGridSize; x++)
-            {
-                if (occupiedTiles.Contains((x, y)))
-                    continue;
-                if (y > highestY)
-                    continue;
-                GameObject instance = Instantiate(blockPrefab2);
-                instance.transform.position = new Vector2(x, y);
-                tempObjects.Add(instance);
-            }
-        }
+        return;
     }
 }
