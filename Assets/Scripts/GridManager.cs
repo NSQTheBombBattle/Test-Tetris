@@ -12,20 +12,30 @@ public class GridManager : MonoBehaviour
     public int height = 25;
     public Transform[,] grid;
     public float gridSizeScale;
+    private List<(int, int)> occupiedTiles = new List<(int, int)>();
+    private List<GameObject> tempObjects = new List<GameObject>();
 
     private void Start()
     {
-        InitGrid();
-        SpawnTetromino();
+        //InitGrid();
+        //SpawnTetromino();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            TestingFunction();
+        }
     }
 
     private void InitGrid()
     {
         gridSizeScale = Mathf.Min(blockPrefab.GetComponent<SpriteRenderer>().bounds.size.x, blockPrefab.GetComponent<SpriteRenderer>().bounds.size.y);
         grid = new Transform[width, height];
-        for(int i = 0; i <= gameOverHeight; i++)
+        for (int i = 0; i <= gameOverHeight; i++)
         {
-            for(int j = 0; j < width; j++)
+            for (int j = 0; j < width; j++)
             {
                 GameObject indicatorInstance = Instantiate(blockIndicatorPrefab, blockIndicatorParent);
                 indicatorInstance.transform.position = new Vector3(j * gridSizeScale, i * gridSizeScale, 0);
@@ -35,7 +45,7 @@ public class GridManager : MonoBehaviour
 
     public void AddBlockToGrid(Vector2Int currentIndex, List<Transform> blockList)
     {
-        for(int i = blockList.Count-1; i >= 0; i--)
+        for (int i = blockList.Count - 1; i >= 0; i--)
         {
             Vector2 pos = currentIndex + blockList[i].GetComponent<Block>().indexOffset;
             grid[(int)pos.x, (int)pos.y] = blockList[i];
@@ -49,7 +59,7 @@ public class GridManager : MonoBehaviour
         else
         {
             SpawnTetromino();
-        }       
+        }
     }
 
     private void SpawnTetromino()
@@ -120,6 +130,41 @@ public class GridManager : MonoBehaviour
                     grid[x, i].position += Vector3.down * gridSizeScale;
                     grid[x, i + 1] = null;
                 }
+            }
+        }
+    }
+
+    private void TestingFunction()
+    {
+        for (int i = tempObjects.Count - 1; i >= 0; i--)
+        {
+            Destroy(tempObjects[i]);
+        }
+        tempObjects.Clear();
+
+        int tempGridSize = 3;
+        List<(int, int)> occupiedTiles = new List<(int, int)>();
+        float chanceToOccupied = 0.75f;
+        int highestY = 0;
+        for (int y = tempGridSize - 1; y >= 0; y--)
+        {
+            for (int x = 0; x < tempGridSize; x++)
+            {
+                if (Random.Range(0, 1f) > chanceToOccupied)
+                    continue;
+                if (y != tempGridSize - 1 && !occupiedTiles.Contains((x, y + 1)))
+                {
+                    continue;
+                }
+                GameObject instance = Instantiate(blockPrefab);
+                instance.transform.position = new Vector2(x, y);
+                tempObjects.Add(instance);
+                occupiedTiles.Add((x, y));
+                if (y > highestY)
+                {
+                    highestY = y;
+                }
+                Debug.Log(x.ToString() + y.ToString());
             }
         }
     }
