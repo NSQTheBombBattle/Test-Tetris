@@ -144,7 +144,7 @@ public class GridManager : MonoBehaviour
 
         int tempGridSize = 3;
         List<(int, int)> occupiedTiles = new List<(int, int)>();
-        float chanceToOccupied = 0.75f;
+        float chanceToOccupied = 0.4f;
         int highestY = 0;
         for (int y = tempGridSize - 1; y >= 0; y--)
         {
@@ -152,19 +152,35 @@ public class GridManager : MonoBehaviour
             {
                 if (Random.Range(0, 1f) > chanceToOccupied)
                     continue;
-                if (y != tempGridSize - 1 && !occupiedTiles.Contains((x, y + 1)))
+                if (y == tempGridSize - 1)
                 {
-                    continue;
+                    GameObject instance = Instantiate(blockPrefab);
+                    instance.transform.position = new Vector2(x, y);
+                    tempObjects.Add(instance);
+                    occupiedTiles.Add((x, y));
+                    if (y > highestY)
+                    {
+                        highestY = y;
+                    }
+                    Debug.Log(x.ToString() + y.ToString());
                 }
-                GameObject instance = Instantiate(blockPrefab);
-                instance.transform.position = new Vector2(x, y);
-                tempObjects.Add(instance);
-                occupiedTiles.Add((x, y));
-                if (y > highestY)
+                else
                 {
-                    highestY = y;
+                    if (y < highestY && !occupiedTiles.Contains((x, y + 1)))
+                    {
+                        continue;
+                    }
+                    GameObject instance = Instantiate(blockPrefab);
+                    instance.transform.position = new Vector2(x, y);
+                    tempObjects.Add(instance);
+                    occupiedTiles.Add((x, y));
+                    if (y > highestY)
+                    {
+                        highestY = y;
+                    }
+                    Debug.Log(x.ToString() + y.ToString());
                 }
-                Debug.Log(x.ToString() + y.ToString());
+
             }
         }
     }
