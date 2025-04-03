@@ -144,37 +144,39 @@ public class GridManager : MonoBehaviour
             Destroy(tempObjects[i]);
         }
         tempObjects.Clear();
-
-        int tempGridSize = 4;
-        List<(int, int)> occupiedTiles = new List<(int, int)>();
         float chanceToOccupied = 0.6f;
-        int highestY = 0;
-        for (int y = tempGridSize - 1; y >= 0; y--)
+        float xOffset = 0;
+        for (int i = 0; i < gridAmount; i++)
         {
-            for (int x = 0; x < tempGridSize; x++)
+            List<(int, int)> occupiedTiles = new List<(int, int)>();
+            int highestY = 0;
+            for (int y = gridSize - 1; y >= 0; y--)
             {
-                float radom = Random.Range(0, 1f);
-                if (radom <= chanceToOccupied && (y == tempGridSize - 1 || y >= highestY || occupiedTiles.Contains((x, y + 1))))
+                for (int x = 0; x < gridSize; x++)
                 {
-                    GameObject instance = Instantiate(blockPrefab);
-                    instance.transform.position = new Vector2(x, y);
-                    tempObjects.Add(instance);
-                    occupiedTiles.Add((x, y));
-                    if (y > highestY)
+                    float radom = Random.Range(0, 1f);
+                    if (radom <= chanceToOccupied && (y == gridSize - 1 || y >= highestY || occupiedTiles.Contains((x, y + 1))))
                     {
-                        highestY = y;
+                        GameObject instance = Instantiate(blockPrefab);
+                        instance.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale);
+                        tempObjects.Add(instance);
+                        occupiedTiles.Add((x, y));
+                        if (y > highestY)
+                        {
+                            highestY = y;
+                        }
+                    }
+                    else
+                    {
+                        if (y > highestY)
+                            continue;
+                        GameObject instance = Instantiate(blockPrefab2);
+                        instance.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale);
+                        tempObjects.Add(instance);
                     }
                 }
-                else
-                {
-                    if (y > highestY)
-                        continue;
-                    GameObject instance = Instantiate(blockPrefab2);
-                    instance.transform.position = new Vector2(x, y);
-                    tempObjects.Add(instance);
-                }
             }
+            xOffset += gridSize * gridSizeScale;
         }
-        return;
     }
 }
