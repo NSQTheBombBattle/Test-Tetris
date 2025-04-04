@@ -76,12 +76,12 @@ public class TetrominoSpawner : MonoBehaviour
     {
         visited[x, y] = true;
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < GRID_SIZE; i++)
         {
             int nx = x + dx[i];
             int ny = y + dy[i];
 
-            if (nx >= 0 && ny >= 0 && nx < 4 && ny < 4 && grid[nx, ny] == 1 && !visited[nx, ny])
+            if (nx >= 0 && ny >= 0 && nx < GRID_SIZE && ny < GRID_SIZE && grid[nx, ny] == 1 && !visited[nx, ny])
             {
                 DFS(nx, ny);
             }
@@ -95,9 +95,9 @@ public class TetrominoSpawner : MonoBehaviour
         visited = new bool[GRID_SIZE, GRID_SIZE];
 
         // Find a starting piece and count total pieces
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < GRID_SIZE; i++)
         {
-            for (int j = 0; j < 4; j++)
+            for (int j = 0; j < GRID_SIZE; j++)
             {
                 if (grid[i, j] == 1)
                 {
@@ -118,9 +118,9 @@ public class TetrominoSpawner : MonoBehaviour
 
         // Count visited pieces
         int visitedCount = 0;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < GRID_SIZE; i++)
         {
-            for (int j = 0; j < 4; j++)
+            for (int j = 0; j < GRID_SIZE; j++)
             {
                 if (grid[i, j] == 1 && visited[i, j])
                 {
