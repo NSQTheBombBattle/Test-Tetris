@@ -152,7 +152,7 @@ public class GridManager : MonoBehaviour
         tempObjects2.Clear();
         float chanceToOccupied = 0.6f;
         float yOffset = 0;
-        for (int j = 0; j < 1; j++)
+        for (int j = 0; j < 3; j++)
         {
             float xOffset = 0;
             for (int i = 0; i < gridAmount; i++)
