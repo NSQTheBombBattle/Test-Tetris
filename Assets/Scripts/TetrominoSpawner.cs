@@ -71,6 +71,7 @@ public class TetrominoSpawner : MonoBehaviour
         //tetrominoInstance.GetComponent<Tetromino>().gridManager = gridManager;
         //tetrominoInstance.GetComponent<Tetromino>().InitTetromino(tetrominoSpawnIndex);
         Debug.Log(ArePiecesConnected());
+        Debug.Log(CountConnectedGroups());
     }
     private void DFS(int x, int y)
     {
@@ -132,4 +133,23 @@ public class TetrominoSpawner : MonoBehaviour
         return visitedCount == totalPieces;
     }
 
+    private int CountConnectedGroups()
+    {
+        visited = new bool[GRID_SIZE, GRID_SIZE]; // Reset visited array
+        int groups = 0;
+
+        for (int i = 0; i < GRID_SIZE; i++)
+        {
+            for (int j = 0; j < GRID_SIZE; j++)
+            {
+                if (grid[i, j] == 1 && !visited[i, j])
+                {
+                    // Found a new group, start DFS
+                    DFS(i, j);
+                    groups++;
+                }
+            }
+        }
+        return groups;
+    }
 }
