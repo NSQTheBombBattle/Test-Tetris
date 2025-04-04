@@ -19,7 +19,7 @@ public class GridManager : MonoBehaviour
     private List<Transform> targetBlockLocation = new List<Transform>();
     private List<Transform> occupiedBlockLocation = new List<Transform>();
 
-    private void Start()
+    private void Awake()
     {
         InitGrid();
         //SpawnTetromino();
@@ -29,7 +29,7 @@ public class GridManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            GeneratePuzzle();
+            GeneratePuzzle2();
         }
     }
 
@@ -213,4 +213,47 @@ public class GridManager : MonoBehaviour
         targetBlockLocation.Clear();
     }
 
+    private void GeneratePuzzle2()
+    {
+        for (int i = occupiedBlockLocation.Count - 1; i >= 0; i--)
+        {
+            Destroy(occupiedBlockLocation[i].gameObject);
+        }
+        targetBlockLocation.Clear();
+        occupiedBlockLocation.Clear();
+
+        float yOffset = 0;
+        for (int j = 0; j < gridRowCount; j++)
+        {
+            float xOffset = 0;
+            for (int i = 0; i < gridColumnCount; i++)
+            {
+                GameObject randomTetromino = tetrominoPrefabs[Random.Range(0, tetrominoPrefabs.Count)];
+                randomTetromino.GetComponent<Tetromino>().gridManager = this;
+                List<Vector2Int> occuppiedIndex = randomTetromino.GetComponent<Tetromino>().GetOccupiedIndex();
+                for (int y = gridSize - 1; y >= 0; y--)
+                {
+                    for (int x = 0; x < gridSize; x++)
+                    {
+                        if (!occuppiedIndex.Contains(new Vector2Int(x, y)))
+                        {
+                            GameObject targetBlockInstance = Instantiate(blockPrefab2);
+                            targetBlockInstance.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale + yOffset);
+                            targetBlockInstance.GetComponent<Block>().indexOffset = new Vector2Int(x + i * gridSize, y + j * gridSize);
+                            occupiedBlockLocation.Add(targetBlockInstance.transform);
+                            Debug.Log("Spawn");
+                        }
+                    }
+                }
+                xOffset += gridSize * gridSizeScale;
+            }
+            yOffset += gridSize * gridSizeScale;
+        }
+        //AddBlockToGrid(Vector2Int.zero, occupiedBlockLocation);
+        //for (int i = targetBlockLocation.Count - 1; i >= 0; i--)
+        //{
+        //    Destroy(targetBlockLocation[i].gameObject);
+        //}
+        targetBlockLocation.Clear();
+    }
 }

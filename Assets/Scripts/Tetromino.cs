@@ -17,6 +17,7 @@ public class Tetromino : MonoBehaviour
     private void Start()
     {
         currentFallTime = fallTime;
+        InitTetromino(Vector2Int.zero); ;
     }
 
     public void InitTetromino(Vector2Int spawnIndex)
@@ -25,9 +26,26 @@ public class Tetromino : MonoBehaviour
         {
             Transform child = transform.GetChild(i);
             childBlocks.Add(child);
+            int xPos = Mathf.CeilToInt(child.localPosition.x / gridManager.gridSizeScale);
+            int yPos = Mathf.CeilToInt(child.localPosition.y / gridManager.gridSizeScale);
+            child.GetComponent<Block>().indexOffset = new Vector2Int(xPos, yPos);
         }
         currentPositionIndex = spawnIndex;
         transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
+    }
+
+    public List<Vector2Int> GetOccupiedIndex()
+    {
+        List<Vector2Int> occupiedIndex = new List<Vector2Int>();
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+            int xPos = Mathf.CeilToInt(child.localPosition.x / gridManager.gridSizeScale);
+            int yPos = Mathf.CeilToInt(child.localPosition.y / gridManager.gridSizeScale);
+            occupiedIndex.Add(new Vector2Int(xPos, yPos + 3));
+            Debug.Log($"{xPos},{yPos}");
+        }
+        return occupiedIndex;
     }
 
 
@@ -111,7 +129,7 @@ public class Tetromino : MonoBehaviour
         for (int i = 0; i < childBlocks.Count; i++)
         {
             Vector2Int originalOffset = childBlocks[i].GetComponent<Block>().indexOffset;
-            childBlocks[i].GetComponent<Block>().indexOffset = new Vector2Int(originalOffset.y, -originalOffset.x); 
+            childBlocks[i].GetComponent<Block>().indexOffset = new Vector2Int(originalOffset.y, -originalOffset.x);
             childBlocks[i].transform.localPosition = new Vector2(childBlocks[i].GetComponent<Block>().indexOffset.x, childBlocks[i].GetComponent<Block>().indexOffset.y) * gridManager.gridSizeScale;
 
         }
