@@ -10,13 +10,14 @@ public class GridManager : MonoBehaviour
     [SerializeField] private GameObject blockIndicatorPrefab;
     [SerializeField] private Transform blockIndicatorParent;
     [SerializeField] private int gridSize;
-    [SerializeField] private int gridAmount;
+    [SerializeField] private int gridColumnCount;
+    [SerializeField] private int gridRowCount;
     private int width = 10;
     private int height = 25;
     public Transform[,] grid;
     public float gridSizeScale;
-    private List<Transform> tempObjects = new List<Transform>();
-    private List<Transform> tempObjects2 = new List<Transform>();
+    private List<Transform> targetBlockLocation = new List<Transform>();
+    private List<Transform> occupiedBlockLocation = new List<Transform>();
 
     private void Start()
     {
@@ -28,13 +29,13 @@ public class GridManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            TestingFunction();
+            GeneratePuzzle();
         }
     }
 
     private void InitGrid()
     {
-        width = gridSize * gridAmount;
+        width = gridSize * gridColumnCount;
         gridSizeScale = Mathf.Min(blockPrefab.GetComponent<SpriteRenderer>().bounds.size.x, blockPrefab.GetComponent<SpriteRenderer>().bounds.size.y);
         grid = new Transform[width, height];
         for (int i = 0; i <= gameOverHeight; i++)
@@ -130,47 +131,54 @@ public class GridManager : MonoBehaviour
             {
                 if (grid[x, i + 1] != null)
                 {
-                    grid[x, i] = grid[x, i + 1];
-                    grid[x, i].position += Vector3.down * gridSizeScale;
+                    int newY = i;
+                    if (grid[x, i + 1].GetComponent<Block>().playerBlock)
+                    {
+                        while (newY > 0 && grid[x, newY - 1] == null)
+                        {
+                            newY--;
+                        }
+                    }
+                    grid[x, newY] = grid[x, i + 1];
+                    grid[x, newY].position += Vector3.down * (i + 1 - newY) * gridSizeScale;
                     grid[x, i + 1] = null;
+                    //grid[x, i] = grid[x, i + 1];
+                    //grid[x, i].position += Vector3.down * gridSizeScale;
+                    //grid[x, i + 1] = null;
                 }
             }
         }
     }
 
-    private void TestingFunction()
+    private void GeneratePuzzle()
     {
-        for (int i = tempObjects.Count - 1; i >= 0; i--)
+        for (int i = occupiedBlockLocation.Count - 1; i >= 0; i--)
         {
-            Destroy(tempObjects[i].gameObject);
+            Destroy(occupiedBlockLocation[i].gameObject);
         }
-        for (int i = tempObjects2.Count - 1; i >= 0; i--)
-        {
-            Destroy(tempObjects2[i].gameObject);
-        }
-        tempObjects.Clear();
-        tempObjects2.Clear();
+        targetBlockLocation.Clear();
+        occupiedBlockLocation.Clear();
+
         float chanceToOccupied = 0.6f;
         float yOffset = 0;
-        for (int j = 0; j < 3; j++)
+        for (int j = 0; j < gridRowCount; j++)
         {
             float xOffset = 0;
-            for (int i = 0; i < gridAmount; i++)
+            for (int i = 0; i < gridColumnCount; i++)
             {
-                List<(int, int)> occupiedTiles = new List<(int, int)>();
+                List<(int, int)> targetBlockList = new List<(int, int)>();
                 int highestY = 0;
                 for (int y = gridSize - 1; y >= 0; y--)
                 {
                     for (int x = 0; x < gridSize; x++)
                     {
-                        float radom = Random.Range(0, 1f);
-                        if (radom <= chanceToOccupied && (y == gridSize - 1 || y >= highestY || occupiedTiles.Contains((x, y + 1))))
+                        if (Random.Range(0, 1f) <= chanceToOccupied && (y == gridSize - 1 || y >= highestY || targetBlockList.Contains((x, y + 1))))
                         {
-                            GameObject instance = Instantiate(blockPrefab);
-                            instance.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale + yOffset);
-                            instance.GetComponent<Block>().indexOffset = new Vector2Int(x, y);
-                            tempObjects.Add(instance.transform);
-                            occupiedTiles.Add((x, y));
+                            GameObject targetBlockInstance = Instantiate(blockPrefab);
+                            targetBlockInstance.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale + yOffset);
+                            targetBlockInstance.GetComponent<Block>().indexOffset = new Vector2Int(x, y);
+                            targetBlockLocation.Add(targetBlockInstance.transform);
+                            targetBlockList.Add((x, y));
                             if (y > highestY)
                             {
                                 highestY = y;
@@ -180,16 +188,16 @@ public class GridManager : MonoBehaviour
                         {
                             if (y > highestY)
                             {
-                                GameObject instance2 = Instantiate(blockPrefab);
-                                instance2.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale + yOffset);
-                                tempObjects.Add(instance2.transform);
-                                occupiedTiles.Add((x, y));
+                                GameObject occupiedBlockInstance = Instantiate(blockPrefab);
+                                occupiedBlockInstance.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale + yOffset);
+                                targetBlockLocation.Add(occupiedBlockInstance.transform);
+                                targetBlockList.Add((x, y));
                                 continue;
                             }
-                            GameObject instance = Instantiate(blockPrefab2);
-                            instance.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale + yOffset);
-                            instance.GetComponent<Block>().indexOffset = new Vector2Int(x + i * gridSize, y + j * gridSize);
-                            tempObjects2.Add(instance.transform);
+                            GameObject targetBlockInstance = Instantiate(blockPrefab2);
+                            targetBlockInstance.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale + yOffset);
+                            targetBlockInstance.GetComponent<Block>().indexOffset = new Vector2Int(x + i * gridSize, y + j * gridSize);
+                            occupiedBlockLocation.Add(targetBlockInstance.transform);
                         }
                     }
                 }
@@ -197,11 +205,12 @@ public class GridManager : MonoBehaviour
             }
             yOffset += gridSize * gridSizeScale;
         }
-        AddBlockToGrid(Vector2Int.zero, tempObjects2);
-        for (int i = tempObjects.Count - 1; i >= 0; i--)
+        AddBlockToGrid(Vector2Int.zero, occupiedBlockLocation);
+        for (int i = targetBlockLocation.Count - 1; i >= 0; i--)
         {
-            Destroy(tempObjects[i].gameObject);
+            Destroy(targetBlockLocation[i].gameObject);
         }
+        targetBlockLocation.Clear();
     }
 
 }

@@ -12,32 +12,16 @@ public class TetrominoSpawner : MonoBehaviour
     private const int GRID_SIZE = 4;
     private int[,] grid = new int[GRID_SIZE, GRID_SIZE];
     private bool[,] visited = new bool[GRID_SIZE, GRID_SIZE];
-    private int[] dx = { 0, 0, -1, 1 }; // Left, Right, Up, Down
+    private int[] dx = { 0, 0, -1, 1 };
     private int[] dy = { -1, 1, 0, 0 };
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public void SpawnTetromino()
     {
         for (int i = 0; i < toggleList.Count; i++)
         {
-            if (toggleList[i].isOn == false)
-            {
-                grid[i % GRID_SIZE, i / GRID_SIZE] = 0;
-                continue;
-            }
-            grid[i % GRID_SIZE, i / GRID_SIZE] = 1;
+            grid[i % GRID_SIZE, i / GRID_SIZE] = toggleList[i].isOn ? 1 : 0;
         }
+
         List<List<Vector2Int>> connectedGroup = CountConnectedGroups();
         for (int i = 0; i < connectedGroup.Count; i++)
         {
@@ -47,6 +31,7 @@ public class TetrominoSpawner : MonoBehaviour
             {
                 GameObject blockInstance = Instantiate(blockPrefab, tetrominoInstance.transform);
                 blockInstance.GetComponent<Block>().indexOffset = connectedGroup[i][j];
+                blockInstance.GetComponent<Block>().playerBlock = true;
                 blockInstance.transform.localPosition = new Vector2(connectedGroup[i][j].x, connectedGroup[i][j].y) * gridManager.gridSizeScale;
             }
             tetrominoInstance.GetComponent<Tetromino>().gridManager = gridManager;
@@ -57,7 +42,7 @@ public class TetrominoSpawner : MonoBehaviour
     private void DFS(int x, int y, List<Vector2Int> group)
     {
         visited[x, y] = true;
-        group.Add(new Vector2Int(x, y)); // Store the current cell as part of the group
+        group.Add(new Vector2Int(x, y));
 
         for (int i = 0; i < 4; i++)
         {
@@ -66,25 +51,24 @@ public class TetrominoSpawner : MonoBehaviour
 
             if (nx >= 0 && ny >= 0 && nx < 4 && ny < 4 && grid[nx, ny] == 1 && !visited[nx, ny])
             {
-                DFS(nx, ny, group); // Continue DFS in all directions
+                DFS(nx, ny, group);
             }
         }
     }
 
     private List<List<Vector2Int>> CountConnectedGroups()
     {
-        visited = new bool[GRID_SIZE, GRID_SIZE]; // Reset visited array
-        List<List<Vector2Int>> groups = new List<List<Vector2Int>>(); // List of groups
+        visited = new bool[GRID_SIZE, GRID_SIZE];
+        List<List<Vector2Int>> groups = new List<List<Vector2Int>>();
         for (int i = 0; i < GRID_SIZE; i++)
         {
             for (int j = 0; j < GRID_SIZE; j++)
             {
                 if (grid[i, j] == 1 && !visited[i, j])
                 {
-                    // Found a new group, start DFS and store the connected cells
                     List<Vector2Int> group = new List<Vector2Int>();
                     DFS(i, j, group);
-                    groups.Add(group); // Add the group to the list of groups
+                    groups.Add(group);
                 }
             }
         }
