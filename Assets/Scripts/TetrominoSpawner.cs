@@ -29,26 +29,6 @@ public class TetrominoSpawner : MonoBehaviour
 
     public void SpawnTetromino()
     {
-        //GameObject tetrominoInstance = Instantiate(tetrominoPrefab, gridManager.transform);
-        int biggestX = 0;
-        int biggestY = 0;
-        for (int i = 0; i < toggleList.Count; i++)
-        {
-            if (toggleList[i].isOn == false)
-                continue;
-            int xIndex = i % GRID_SIZE;
-            int yIndex = i / GRID_SIZE;
-            if (xIndex > biggestX)
-            {
-                biggestX = xIndex;
-            }
-            if (yIndex > biggestY)
-            {
-                biggestY = yIndex;
-            }
-        }
-        float xOffset = Mathf.CeilToInt(biggestX / 2f) * gridManager.gridSizeScale;
-        float yOffset = Mathf.CeilToInt(biggestY / 2f) * gridManager.gridSizeScale;
         for (int i = 0; i < toggleList.Count; i++)
         {
             if (toggleList[i].isOn == false)
@@ -56,97 +36,55 @@ public class TetrominoSpawner : MonoBehaviour
                 grid[i % GRID_SIZE, i / GRID_SIZE] = 0;
                 continue;
             }
-            //GameObject blockInstance = Instantiate(blockPrefab, tetrominoInstance.transform);
-            //float xPos = (i % GRID_SIZE * gridManager.gridSizeScale) - xOffset;
-            //float yPos = (i / GRID_SIZE * gridManager.gridSizeScale) - yOffset;
-            //blockInstance.transform.localPosition = new Vector2(xPos, yPos);
             grid[i % GRID_SIZE, i / GRID_SIZE] = 1;
         }
-
-        //if (tetrominoInstance.transform.childCount == 0)
-        //{
-        //    Destroy(tetrominoInstance);
-        //    return;
-        //}
-        //tetrominoInstance.GetComponent<Tetromino>().gridManager = gridManager;
-        //tetrominoInstance.GetComponent<Tetromino>().InitTetromino(tetrominoSpawnIndex);
-        Debug.Log(ArePiecesConnected());
-        Debug.Log(CountConnectedGroups());
+        List<List<Vector2Int>> connectedGroup = CountConnectedGroups();
+        for (int i = 0; i < connectedGroup.Count; i++)
+        {
+            GameObject tetrominoInstance = Instantiate(tetrominoPrefab, gridManager.transform);
+            tetrominoInstance.transform.position = new Vector3(4, 10, 0);
+            for (int j = 0; j < connectedGroup[i].Count; j++)
+            {
+                GameObject blockInstance = Instantiate(blockPrefab, tetrominoInstance.transform);
+                blockInstance.GetComponent<Block>().indexOffset = connectedGroup[i][j];
+                blockInstance.transform.localPosition = new Vector2(connectedGroup[i][j].x, connectedGroup[i][j].y) * gridManager.gridSizeScale;
+            }
+            tetrominoInstance.GetComponent<Tetromino>().gridManager = gridManager;
+            tetrominoInstance.GetComponent<Tetromino>().InitTetromino(tetrominoSpawnIndex);
+        }
     }
-    private void DFS(int x, int y)
+
+    private void DFS(int x, int y, List<Vector2Int> group)
     {
         visited[x, y] = true;
+        group.Add(new Vector2Int(x, y)); // Store the current cell as part of the group
 
-        for (int i = 0; i < GRID_SIZE; i++)
+        for (int i = 0; i < 4; i++)
         {
             int nx = x + dx[i];
             int ny = y + dy[i];
 
-            if (nx >= 0 && ny >= 0 && nx < GRID_SIZE && ny < GRID_SIZE && grid[nx, ny] == 1 && !visited[nx, ny])
+            if (nx >= 0 && ny >= 0 && nx < 4 && ny < 4 && grid[nx, ny] == 1 && !visited[nx, ny])
             {
-                DFS(nx, ny);
+                DFS(nx, ny, group); // Continue DFS in all directions
             }
         }
     }
 
-    private bool ArePiecesConnected()
-    {
-        int startX = -1, startY = -1;
-        int totalPieces = 0;
-        visited = new bool[GRID_SIZE, GRID_SIZE];
-
-        // Find a starting piece and count total pieces
-        for (int i = 0; i < GRID_SIZE; i++)
-        {
-            for (int j = 0; j < GRID_SIZE; j++)
-            {
-                if (grid[i, j] == 1)
-                {
-                    totalPieces++;
-                    if (startX == -1)
-                    {
-                        startX = i;
-                        startY = j;
-                    }
-                }
-            }
-        }
-
-        if (startX == -1) return true; // No pieces, trivially connected
-
-        // Start DFS from the first found piece
-        DFS(startX, startY);
-
-        // Count visited pieces
-        int visitedCount = 0;
-        for (int i = 0; i < GRID_SIZE; i++)
-        {
-            for (int j = 0; j < GRID_SIZE; j++)
-            {
-                if (grid[i, j] == 1 && visited[i, j])
-                {
-                    visitedCount++;
-                }
-            }
-        }
-
-        return visitedCount == totalPieces;
-    }
-
-    private int CountConnectedGroups()
+    private List<List<Vector2Int>> CountConnectedGroups()
     {
         visited = new bool[GRID_SIZE, GRID_SIZE]; // Reset visited array
-        int groups = 0;
-
+        List<List<Vector2Int>> groups = new List<List<Vector2Int>>(); // List of groups
         for (int i = 0; i < GRID_SIZE; i++)
         {
             for (int j = 0; j < GRID_SIZE; j++)
             {
                 if (grid[i, j] == 1 && !visited[i, j])
                 {
-                    // Found a new group, start DFS
-                    DFS(i, j);
-                    groups++;
+                    // Found a new group, start DFS and store the connected cells
+                    List<Vector2Int> group = new List<Vector2Int>();
+                    DFS(i, j, group);
+                    groups.Add(group); // Add the group to the list of groups
                 }
             }
         }

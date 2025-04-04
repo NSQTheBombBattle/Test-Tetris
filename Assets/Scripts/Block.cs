@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
-    public Vector2 indexOffset;
+    public Vector2Int indexOffset;
 }

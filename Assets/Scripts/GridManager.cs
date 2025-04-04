@@ -168,7 +168,7 @@ public class GridManager : MonoBehaviour
                         {
                             GameObject instance = Instantiate(blockPrefab);
                             instance.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale + yOffset);
-                            instance.GetComponent<Block>().indexOffset = new Vector2(x, y);
+                            instance.GetComponent<Block>().indexOffset = new Vector2Int(x, y);
                             tempObjects.Add(instance.transform);
                             occupiedTiles.Add((x, y));
                             if (y > highestY)
@@ -188,7 +188,7 @@ public class GridManager : MonoBehaviour
                             }
                             GameObject instance = Instantiate(blockPrefab2);
                             instance.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale + yOffset);
-                            instance.GetComponent<Block>().indexOffset = new Vector2(x + i * gridSize, y + j * gridSize);
+                            instance.GetComponent<Block>().indexOffset = new Vector2Int(x + i * gridSize, y + j * gridSize);
                             tempObjects2.Add(instance.transform);
                         }
                     }

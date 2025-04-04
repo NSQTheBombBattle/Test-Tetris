@@ -25,7 +25,6 @@ public class Tetromino : MonoBehaviour
         {
             Transform child = transform.GetChild(i);
             childBlocks.Add(child);
-            child.GetComponent<Block>().indexOffset = new Vector2(child.localPosition.x / gridManager.gridSizeScale, child.localPosition.y / gridManager.gridSizeScale);
         }
         currentPositionIndex = spawnIndex;
         transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
@@ -111,17 +110,18 @@ public class Tetromino : MonoBehaviour
     {
         for (int i = 0; i < childBlocks.Count; i++)
         {
-            Vector2 originalOffset = childBlocks[i].GetComponent<Block>().indexOffset;
-            childBlocks[i].GetComponent<Block>().indexOffset = new Vector2(originalOffset.y, -originalOffset.x);
-            childBlocks[i].transform.localPosition = childBlocks[i].GetComponent<Block>().indexOffset * gridManager.gridSizeScale;
+            Vector2Int originalOffset = childBlocks[i].GetComponent<Block>().indexOffset;
+            childBlocks[i].GetComponent<Block>().indexOffset = new Vector2Int(originalOffset.y, -originalOffset.x); 
+            childBlocks[i].transform.localPosition = new Vector2(childBlocks[i].GetComponent<Block>().indexOffset.x, childBlocks[i].GetComponent<Block>().indexOffset.y) * gridManager.gridSizeScale;
+
         }
         if (!ValidMove())
         {
             for (int i = 0; i < childBlocks.Count; i++)
             {
-                Vector2 originalOffset = childBlocks[i].GetComponent<Block>().indexOffset;
-                childBlocks[i].GetComponent<Block>().indexOffset = new Vector2(-originalOffset.y, originalOffset.x);
-                childBlocks[i].transform.localPosition = childBlocks[i].GetComponent<Block>().indexOffset * gridManager.gridSizeScale;
+                Vector2Int originalOffset = childBlocks[i].GetComponent<Block>().indexOffset;
+                childBlocks[i].GetComponent<Block>().indexOffset = new Vector2Int(-originalOffset.y, originalOffset.x);
+                childBlocks[i].transform.localPosition = new Vector2(childBlocks[i].GetComponent<Block>().indexOffset.x, childBlocks[i].GetComponent<Block>().indexOffset.y) * gridManager.gridSizeScale;
             }
         }
 
