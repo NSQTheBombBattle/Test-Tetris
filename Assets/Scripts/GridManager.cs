@@ -15,7 +15,8 @@ public class GridManager : MonoBehaviour
     private int height = 25;
     public Transform[,] grid;
     public float gridSizeScale;
-    private List<GameObject> tempObjects = new List<GameObject>();
+    private List<Transform> tempObjects = new List<Transform>();
+    private List<Transform> tempObjects2 = new List<Transform>();
 
     private void Start()
     {
@@ -61,7 +62,7 @@ public class GridManager : MonoBehaviour
         }
         else
         {
-            SpawnTetromino();
+            //SpawnTetromino();
         }
     }
 
@@ -141,12 +142,17 @@ public class GridManager : MonoBehaviour
     {
         for (int i = tempObjects.Count - 1; i >= 0; i--)
         {
-            Destroy(tempObjects[i]);
+            Destroy(tempObjects[i].gameObject);
+        }
+        for (int i = tempObjects2.Count - 1; i >= 0; i--)
+        {
+            Destroy(tempObjects2[i].gameObject);
         }
         tempObjects.Clear();
+        tempObjects2.Clear();
         float chanceToOccupied = 0.6f;
         float yOffset = 0;
-        for(int j = 0; j < 3; j++)
+        for (int j = 0; j < 1; j++)
         {
             float xOffset = 0;
             for (int i = 0; i < gridAmount; i++)
@@ -162,7 +168,8 @@ public class GridManager : MonoBehaviour
                         {
                             GameObject instance = Instantiate(blockPrefab);
                             instance.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale + yOffset);
-                            tempObjects.Add(instance);
+                            instance.GetComponent<Block>().indexOffset = new Vector2(x, y);
+                            tempObjects.Add(instance.transform);
                             occupiedTiles.Add((x, y));
                             if (y > highestY)
                             {
@@ -172,10 +179,17 @@ public class GridManager : MonoBehaviour
                         else
                         {
                             if (y > highestY)
+                            {
+                                GameObject instance2 = Instantiate(blockPrefab);
+                                instance2.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale + yOffset);
+                                tempObjects.Add(instance2.transform);
+                                occupiedTiles.Add((x, y));
                                 continue;
+                            }
                             GameObject instance = Instantiate(blockPrefab2);
                             instance.transform.position = new Vector2(x * gridSizeScale + xOffset, y * gridSizeScale + yOffset);
-                            tempObjects.Add(instance);
+                            instance.GetComponent<Block>().indexOffset = new Vector2(x + i * gridSize, y + j * gridSize);
+                            tempObjects2.Add(instance.transform);
                         }
                     }
                 }
@@ -183,6 +197,11 @@ public class GridManager : MonoBehaviour
             }
             yOffset += gridSize * gridSizeScale;
         }
+        AddBlockToGrid(Vector2Int.zero, tempObjects2);
+        for (int i = tempObjects.Count - 1; i >= 0; i--)
+        {
+            Destroy(tempObjects[i].gameObject);
+        }
     }
-        
+
 }
