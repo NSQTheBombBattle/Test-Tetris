@@ -22,7 +22,6 @@ public class GridManager : MonoBehaviour
     private void Awake()
     {
         InitGrid();
-        //SpawnTetromino();
     }
 
     private void Update()
@@ -60,10 +59,6 @@ public class GridManager : MonoBehaviour
         if (CheckForLineExceeded())
         {
             Debug.Log("Game Over!");
-        }
-        else
-        {
-            //SpawnTetromino();
         }
     }
 
@@ -142,9 +137,6 @@ public class GridManager : MonoBehaviour
                     grid[x, newY] = grid[x, i + 1];
                     grid[x, newY].position += Vector3.down * (i + 1 - newY) * gridSizeScale;
                     grid[x, i + 1] = null;
-                    //grid[x, i] = grid[x, i + 1];
-                    //grid[x, i].position += Vector3.down * gridSizeScale;
-                    //grid[x, i + 1] = null;
                 }
             }
         }
@@ -249,11 +241,6 @@ public class GridManager : MonoBehaviour
             }
             yOffset += gridSize * gridSizeScale;
         }
-        //AddBlockToGrid(Vector2Int.zero, occupiedBlockLocation);
-        //for (int i = targetBlockLocation.Count - 1; i >= 0; i--)
-        //{
-        //    Destroy(targetBlockLocation[i].gameObject);
-        //}
         targetBlockLocation.Clear();
     }
 }

@@ -44,22 +44,6 @@ public class TetrominoSpawner : MonoBehaviour
         }
         tetrominoInstance.GetComponent<Tetromino>().gridManager = gridManager;
         tetrominoInstance.GetComponent<Tetromino>().InitTetromino(tetrominoSpawnIndex);
-        Debug.Log(tetrominoInstance.transform.position);
-        //List<List<Vector2Int>> connectedGroup = GetConnectedPiece();
-        //for (int i = 0; i < connectedGroup.Count; i++)
-        //{
-        //    GameObject tetrominoInstance = Instantiate(tetrominoPrefab, gridManager.transform);
-        //    tetrominoInstance.transform.position = new Vector3(4, 10, 0);
-        //    for (int j = 0; j < connectedGroup[i].Count; j++)
-        //    {
-        //        GameObject blockInstance = Instantiate(blockPrefab, tetrominoInstance.transform);
-        //        blockInstance.GetComponent<Block>().indexOffset = connectedGroup[i][j];
-        //        blockInstance.GetComponent<Block>().playerBlock = true;
-        //        blockInstance.transform.localPosition = new Vector2(connectedGroup[i][j].x, connectedGroup[i][j].y) * gridManager.gridSizeScale;
-        //    }
-        //    tetrominoInstance.GetComponent<Tetromino>().gridManager = gridManager;
-        //    tetrominoInstance.GetComponent<Tetromino>().InitTetromino(tetrominoSpawnIndex);
-        //}
     }
 
     private void DFS(int x, int y, List<Vector2Int> positionList)
