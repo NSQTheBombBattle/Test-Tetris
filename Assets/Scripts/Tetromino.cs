@@ -57,7 +57,6 @@ public class Tetromino : MonoBehaviour
             MoveDown();
         }
 
-        //if (Input.GetKeyDown(KeyCode.UpArrow)) Rotate();
         if (Input.GetKeyDown(KeyCode.LeftArrow)) MoveTetromino(new Vector2Int(-1, 0));
         if (Input.GetKeyDown(KeyCode.RightArrow)) MoveTetromino(new Vector2Int(1, 0));
         if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -122,28 +121,6 @@ public class Tetromino : MonoBehaviour
             currentPositionIndex -= indexMoved;
             transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
         }
-    }
-
-    void Rotate()
-    {
-        for (int i = 0; i < childBlocks.Count; i++)
-        {
-            Vector2Int originalOffset = childBlocks[i].GetComponent<Block>().indexOffset;
-            childBlocks[i].GetComponent<Block>().indexOffset = new Vector2Int(originalOffset.y, -originalOffset.x);
-            childBlocks[i].transform.localPosition = new Vector2(childBlocks[i].GetComponent<Block>().indexOffset.x, childBlocks[i].GetComponent<Block>().indexOffset.y) * gridManager.gridSizeScale;
-
-        }
-        if (!ValidMove())
-        {
-            for (int i = 0; i < childBlocks.Count; i++)
-            {
-                Vector2Int originalOffset = childBlocks[i].GetComponent<Block>().indexOffset;
-                childBlocks[i].GetComponent<Block>().indexOffset = new Vector2Int(-originalOffset.y, originalOffset.x);
-                childBlocks[i].transform.localPosition = new Vector2(childBlocks[i].GetComponent<Block>().indexOffset.x, childBlocks[i].GetComponent<Block>().indexOffset.y) * gridManager.gridSizeScale;
-            }
-        }
-
-        transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
     }
 
     bool ValidMove()
