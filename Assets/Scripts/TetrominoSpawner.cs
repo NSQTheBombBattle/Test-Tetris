@@ -8,15 +8,18 @@ public class TetrominoSpawner : MonoBehaviour
     [SerializeField] private GameObject tetrominoPrefab;
     [SerializeField] private GameObject blockPrefab;
     [SerializeField] private GridManager gridManager;
-    [SerializeField] private Vector2Int tetrominoSpawnIndex = new Vector2Int(4, 20);
+    private int debugSpawnHeight = 20;
     private int[,] grid;
     private bool[,] visited;
     private int[] dx = { 0, 0, -1, 1 };
     private int[] dy = { -1, 1, 0, 0 };
+    private int currentSpawnSequence;
+    private int gridSize;
 
     private void Start()
     {
-        grid = new int[gridManager.gridSize, gridManager.gridSize];
+        gridSize = gridManager.gridSize;
+        grid = new int[gridSize, gridSize];
     }
 
     private void Update()
@@ -28,13 +31,13 @@ public class TetrominoSpawner : MonoBehaviour
     {
         for (int i = 0; i < toggleList.Count; i++)
         {
-            grid[i % gridManager.gridSize, i / gridManager.gridSize] = toggleList[i].isOn ? 1 : 0;
+            grid[i % gridSize, i / gridSize] = toggleList[i].isOn ? 1 : 0;
         }
         List<Vector2Int> connectedGroup = GetConnectedPiece();
         if (connectedGroup.Count == 0)
             return;
-        GameObject tetrominoInstance = Instantiate(tetrominoPrefab, gridManager.transform);
-        tetrominoInstance.transform.position = new Vector3(4, 20, 0);
+        GameObject tetrominoInstance = Instantiate(tetrominoPrefab, transform);
+        tetrominoInstance.transform.position = new Vector3(currentSpawnSequence * gridSize, debugSpawnHeight, 0);
         for (int i = 0; i < connectedGroup.Count; i++)
         {
             GameObject blockInstance = Instantiate(blockPrefab, tetrominoInstance.transform);
@@ -43,7 +46,9 @@ public class TetrominoSpawner : MonoBehaviour
             blockInstance.transform.localPosition = new Vector2(connectedGroup[i].x, connectedGroup[i].y) * gridManager.gridSizeScale;
         }
         tetrominoInstance.GetComponent<Tetromino>().gridManager = gridManager;
-        tetrominoInstance.GetComponent<Tetromino>().InitTetromino(tetrominoSpawnIndex);
+        tetrominoInstance.GetComponent<Tetromino>().InitTetromino(new Vector2Int(currentSpawnSequence * gridSize, debugSpawnHeight));
+        currentSpawnSequence += 1;
+        currentSpawnSequence %= gridManager.gridColumnCount;
     }
 
     private void DFS(int x, int y, List<Vector2Int> positionList)
@@ -51,12 +56,12 @@ public class TetrominoSpawner : MonoBehaviour
         visited[x, y] = true;
         positionList.Add(new Vector2Int(x, y));
 
-        for (int i = 0; i < gridManager.gridSize; i++)
+        for (int i = 0; i < gridSize; i++)
         {
             int nx = x + dx[i];
             int ny = y + dy[i];
 
-            if (nx >= 0 && ny >= 0 && nx < gridManager.gridSize && ny < gridManager.gridSize && grid[nx, ny] == 1 && !visited[nx, ny])
+            if (nx >= 0 && ny >= 0 && nx < gridSize && ny < gridSize && grid[nx, ny] == 1 && !visited[nx, ny])
             {
                 DFS(nx, ny, positionList);
             }
@@ -66,10 +71,10 @@ public class TetrominoSpawner : MonoBehaviour
     private List<Vector2Int> GetConnectedPiece()
     {
         List<Vector2Int> pieceList = new List<Vector2Int>();
-        visited = new bool[gridManager.gridSize, gridManager.gridSize];
-        for (int y = gridManager.gridSize - 1; y >= 0; y--)
+        visited = new bool[gridSize, gridSize];
+        for (int y = gridSize - 1; y >= 0; y--)
         {
-            for (int x = 0; x < gridManager.gridSize; x++)
+            for (int x = 0; x < gridSize; x++)
             {
                 if (grid[x, y] == 1 && !visited[x, y])
                 {
