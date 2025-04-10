@@ -62,7 +62,7 @@ public class TetrominoSpawner : MonoBehaviour
         }
     }
 
-    private void FinaliseTetrominoBase()
+    public void FinaliseTetrominoBase()
     {
         List<Vector2Int> connectedGroup = GetConnectedPiece();
         if (connectedGroup.Count == 0)
@@ -81,18 +81,12 @@ public class TetrominoSpawner : MonoBehaviour
                 }
             }
         }
-        return;
-        for (int i = 0; i < connectedGroup.Count; i++)
-        {
-            GameObject blockInstance = Instantiate(blockPrefab, currentTetromino.transform);
-            blockInstance.GetComponent<Block>().indexOffset = connectedGroup[i];
-            blockInstance.transform.localPosition = new Vector2(connectedGroup[i].x, connectedGroup[i].y) * gridManager.gridSizeScale;
-            blockInstance.SetActive(false);
-        }
+        currentTetromino.GetComponent<Tetromino>().enabled = true;
         currentTetromino.GetComponent<Tetromino>().gridManager = gridManager;
         currentTetromino.GetComponent<Tetromino>().InitTetromino(new Vector2Int(currentSpawnSequence * gridSize, debugSpawnHeight));
         currentSpawnSequence += 1;
         currentSpawnSequence %= gridManager.gridColumnCount;
+        SpawnTetrominoBase();
     }
 
     private void OnToggleUpdate(int toggleIndex, bool isToggleOn)
