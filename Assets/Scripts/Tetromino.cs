@@ -17,7 +17,7 @@ public class Tetromino : MonoBehaviour
     private void Start()
     {
         currentFallTime = fallTime;
-        InitTetromino(Vector2Int.zero); ;
+        //InitTetromino(Vector2Int.zero);
     }
 
     public void InitTetromino(Vector2Int spawnIndex)
