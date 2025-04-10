@@ -5,5 +5,4 @@ using UnityEngine;
 public class Block : MonoBehaviour
 {
     public Vector2Int indexOffset;
-    public bool playerBlock;
 }

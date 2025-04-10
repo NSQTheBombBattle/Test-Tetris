@@ -51,7 +51,6 @@ public class TetrominoSpawner : MonoBehaviour
         {
             GameObject blockInstance = Instantiate(blockPrefab, tetrominoInstance.transform);
             blockInstance.GetComponent<Block>().indexOffset = connectedGroup[i];
-            blockInstance.GetComponent<Block>().playerBlock = true;
             blockInstance.transform.localPosition = new Vector2(connectedGroup[i].x, connectedGroup[i].y) * gridManager.gridSizeScale;
         }
         tetrominoInstance.GetComponent<Tetromino>().gridManager = gridManager;

@@ -126,16 +126,8 @@ public class GridManager : MonoBehaviour
             {
                 if (grid[x, i + 1] != null)
                 {
-                    int newY = i;
-                    if (grid[x, i + 1].GetComponent<Block>().playerBlock)
-                    {
-                        while (newY > 0 && grid[x, newY - 1] == null)
-                        {
-                            newY--;
-                        }
-                    }
-                    grid[x, newY] = grid[x, i + 1];
-                    grid[x, newY].position += Vector3.down * (i + 1 - newY) * gridSizeScale;
+                    grid[x, i] = grid[x, i + 1];
+                    grid[x, i].position += Vector3.down * gridSizeScale;
                     grid[x, i + 1] = null;
                 }
             }
