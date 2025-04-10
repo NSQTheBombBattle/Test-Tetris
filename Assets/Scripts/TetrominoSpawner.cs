@@ -81,12 +81,29 @@ public class TetrominoSpawner : MonoBehaviour
                 }
             }
         }
+        StartCoroutine(DelayedInit());
+    }
+
+    IEnumerator DelayedInit()
+    {
+        yield return null; // Wait for the destruction to apply
         currentTetromino.GetComponent<Tetromino>().enabled = true;
         currentTetromino.GetComponent<Tetromino>().gridManager = gridManager;
         currentTetromino.GetComponent<Tetromino>().InitTetromino(new Vector2Int(currentSpawnSequence * gridSize, debugSpawnHeight));
         currentSpawnSequence += 1;
         currentSpawnSequence %= gridManager.gridColumnCount;
+        //ResetTetrominoBase();
         SpawnTetrominoBase();
+    }
+
+    private void ResetTetrominoBase()
+    {
+        for (int i = 0; i < toggleList.Count; i++)
+        {
+            toggleList[i].isOn = false;
+        }
+
+        gridObject = new GameObject[gridSize, gridSize];
     }
 
     private void OnToggleUpdate(int toggleIndex, bool isToggleOn)
@@ -106,7 +123,7 @@ public class TetrominoSpawner : MonoBehaviour
             int nx = x + dx[i];
             int ny = y + dy[i];
 
-            if (nx >= 0 && ny >= 0 && nx < gridSize && ny < gridSize && gridObject[nx, ny] != null && gridObject[nx, ny].activeSelf && !visited[nx, ny])
+            if (nx >= 0 && ny >= 0 && nx < gridSize && ny < gridSize && gridObject[nx, ny].activeSelf && !visited[nx, ny])
             {
                 DFS(nx, ny, positionList);
             }
@@ -121,7 +138,7 @@ public class TetrominoSpawner : MonoBehaviour
         {
             for (int x = 0; x < gridSize; x++)
             {
-                if (gridObject[x, y] != null && gridObject[x, y].activeSelf && !visited[x, y])
+                if (gridObject[x, y].activeSelf && !visited[x, y])
                 {
                     DFS(x, y, pieceList);
                     return pieceList;
