@@ -9,11 +9,15 @@ public class TetrominoSpawner : MonoBehaviour
     [SerializeField] private GameObject blockPrefab;
     [SerializeField] private GridManager gridManager;
     [SerializeField] private Vector2Int tetrominoSpawnIndex = new Vector2Int(4, 20);
-    private const int GRID_SIZE = 4;
-    private int[,] grid = new int[GRID_SIZE, GRID_SIZE];
-    private bool[,] visited = new bool[GRID_SIZE, GRID_SIZE];
+    private int[,] grid;
+    private bool[,] visited;
     private int[] dx = { 0, 0, -1, 1 };
     private int[] dy = { -1, 1, 0, 0 };
+
+    private void Start()
+    {
+        grid = new int[gridManager.gridSize, gridManager.gridSize];
+    }
 
     private void Update()
     {
@@ -24,7 +28,7 @@ public class TetrominoSpawner : MonoBehaviour
     {
         for (int i = 0; i < toggleList.Count; i++)
         {
-            grid[i % GRID_SIZE, i / GRID_SIZE] = toggleList[i].isOn ? 1 : 0;
+            grid[i % gridManager.gridSize, i / gridManager.gridSize] = toggleList[i].isOn ? 1 : 0;
         }
         List<Vector2Int> connectedGroup = GetConnectedPiece();
         if (connectedGroup.Count == 0)
@@ -63,12 +67,12 @@ public class TetrominoSpawner : MonoBehaviour
         visited[x, y] = true;
         positionList.Add(new Vector2Int(x, y));
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < gridManager.gridSize; i++)
         {
             int nx = x + dx[i];
             int ny = y + dy[i];
 
-            if (nx >= 0 && ny >= 0 && nx < 4 && ny < 4 && grid[nx, ny] == 1 && !visited[nx, ny])
+            if (nx >= 0 && ny >= 0 && nx < gridManager.gridSize && ny < gridManager.gridSize && grid[nx, ny] == 1 && !visited[nx, ny])
             {
                 DFS(nx, ny, positionList);
             }
@@ -78,10 +82,10 @@ public class TetrominoSpawner : MonoBehaviour
     private List<Vector2Int> GetConnectedPiece()
     {
         List<Vector2Int> pieceList = new List<Vector2Int>();
-        visited = new bool[GRID_SIZE, GRID_SIZE];
-        for (int y = GRID_SIZE - 1; y >= 0; y--)
+        visited = new bool[gridManager.gridSize, gridManager.gridSize];
+        for (int y = gridManager.gridSize - 1; y >= 0; y--)
         {
-            for (int x = 0; x < GRID_SIZE; x++)
+            for (int x = 0; x < gridManager.gridSize; x++)
             {
                 if (grid[x, y] == 1 && !visited[x, y])
                 {

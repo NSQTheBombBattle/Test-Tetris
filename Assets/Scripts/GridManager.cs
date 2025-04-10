@@ -9,9 +9,9 @@ public class GridManager : MonoBehaviour
     [SerializeField] private int gameOverHeight = 20;
     [SerializeField] private GameObject blockIndicatorPrefab;
     [SerializeField] private Transform blockIndicatorParent;
-    [SerializeField] private int gridSize;
-    [SerializeField] private int gridColumnCount;
-    [SerializeField] private int gridRowCount;
+    [SerializeField] public int gridSize;
+    [SerializeField] public int gridColumnCount;
+    [SerializeField] public int gridRowCount;
     private int width = 10;
     private int height = 25;
     public Transform[,] grid;
