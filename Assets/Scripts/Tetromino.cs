@@ -9,9 +9,7 @@ public class Tetromino : MonoBehaviour
     [SerializeField] private float holdTimeForFastFall = 0.25f;
     private Vector2Int currentPositionIndex;
     private List<Transform> childBlocks = new List<Transform>();
-    private bool isHoldingDown;
     private float fallTimer;
-    private float holdTimer;
     private float currentFallTime;
 
     private void Start()
@@ -43,7 +41,6 @@ public class Tetromino : MonoBehaviour
             int xPos = Mathf.CeilToInt(child.localPosition.x / gridManager.gridSizeScale);
             int yPos = Mathf.CeilToInt(child.localPosition.y / gridManager.gridSizeScale);
             occupiedIndex.Add(new Vector2Int(xPos, yPos + 3));
-            Debug.Log($"{xPos},{yPos}");
         }
         return occupiedIndex;
     }
@@ -55,34 +52,6 @@ public class Tetromino : MonoBehaviour
         if (fallTimer >= currentFallTime)
         {
             MoveDown();
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) MoveTetromino(new Vector2Int(-1, 0));
-        if (Input.GetKeyDown(KeyCode.RightArrow)) MoveTetromino(new Vector2Int(1, 0));
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            isHoldingDown = true;
-            MoveDown();
-        }
-
-        if (Input.GetKeyUp(KeyCode.DownArrow))
-        {
-            isHoldingDown = false;
-            holdTimer = 0;
-            currentFallTime = fallTime;
-        }
-
-        CheckMoveDownHold();
-    }
-
-    void Move(Vector2 direction)
-    {
-        currentPositionIndex.x += Mathf.RoundToInt(direction.x);
-        transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
-        if (!ValidMove())
-        {
-            currentPositionIndex.x += Mathf.RoundToInt(direction.x);
-            transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
         }
     }
 
@@ -97,29 +66,6 @@ public class Tetromino : MonoBehaviour
             transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
             gridManager.AddBlockToGrid(currentPositionIndex, childBlocks);
             Destroy(this.gameObject);
-        }
-    }
-
-    private void CheckMoveDownHold()
-    {
-        if (isHoldingDown)
-        {
-            holdTimer += Time.deltaTime;
-            if (holdTimer >= holdTimeForFastFall)
-            {
-                currentFallTime = fastFallTime;
-            }
-        }
-    }
-
-    private void MoveTetromino(Vector2Int indexMoved)
-    {
-        currentPositionIndex += indexMoved;
-        transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
-        if (!ValidMove())
-        {
-            currentPositionIndex -= indexMoved;
-            transform.position = new Vector3(currentPositionIndex.x * gridManager.gridSizeScale, currentPositionIndex.y * gridManager.gridSizeScale, 0);
         }
     }
 
