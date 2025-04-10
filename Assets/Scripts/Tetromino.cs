@@ -5,8 +5,6 @@ public class Tetromino : MonoBehaviour
 {
     public GridManager gridManager;
     [SerializeField] private float fallTime = 0.8f;
-    [SerializeField] private float fastFallTime = 0.05f;
-    [SerializeField] private float holdTimeForFastFall = 0.25f;
     private Vector2Int currentPositionIndex;
     private List<Transform> childBlocks = new List<Transform>();
     private float fallTimer;
