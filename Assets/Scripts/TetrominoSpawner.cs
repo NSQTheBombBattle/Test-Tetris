@@ -10,7 +10,6 @@ public class TetrominoSpawner : MonoBehaviour
     [SerializeField] private GameObject tetrominoPrefab;
     [SerializeField] private GameObject blockPrefab;
     [SerializeField] private GridManager gridManager;
-    private GameObject currentTetromino;
     private int debugSpawnHeight = 20;
     private GameObject[,] gridObject;
     private bool[,] visited;
@@ -18,6 +17,7 @@ public class TetrominoSpawner : MonoBehaviour
     private int[] dy = { -1, 1, 0, 0 };
     private int currentSpawnSequence;
     private int gridSize;
+    private GameObject currentTetromino;
 
     private void Start()
     {
@@ -40,21 +40,8 @@ public class TetrominoSpawner : MonoBehaviour
     private IEnumerator RoundStart()
     {
         SpawnTetrominoBase();
-        yield return new WaitForSeconds(blockBuildingPhaseTime); 
-        List<Vector2Int> connectedGroup = GetConnectedPiece();
-        if (connectedGroup.Count == 0)
-            yield break;
-        for (int i = 0; i < connectedGroup.Count; i++)
-        {
-            GameObject blockInstance = Instantiate(blockPrefab, currentTetromino.transform);
-            blockInstance.GetComponent<Block>().indexOffset = connectedGroup[i];
-            blockInstance.transform.localPosition = new Vector2(connectedGroup[i].x, connectedGroup[i].y) * gridManager.gridSizeScale;
-            blockInstance.SetActive(false);
-        }
-        currentTetromino.GetComponent<Tetromino>().gridManager = gridManager;
-        currentTetromino.GetComponent<Tetromino>().InitTetromino(new Vector2Int(currentSpawnSequence * gridSize, debugSpawnHeight));
-        currentSpawnSequence += 1;
-        currentSpawnSequence %= gridManager.gridColumnCount;
+        yield return new WaitForSeconds(blockBuildingPhaseTime);
+        FinaliseTetrominoBase();
     }
 
     private void SpawnTetrominoBase()
@@ -70,29 +57,49 @@ public class TetrominoSpawner : MonoBehaviour
                 blockInstance.GetComponent<Block>().indexOffset = new Vector2Int(x, y);
                 blockInstance.transform.localPosition = new Vector2(x, y) * gridManager.gridSizeScale;
                 gridObject[x, y] = blockInstance;
+                blockInstance.SetActive(false);
             }
         }
+    }
+
+    private void FinaliseTetrominoBase()
+    {
+        List<Vector2Int> connectedGroup = GetConnectedPiece();
+        if (connectedGroup.Count == 0)
+        {
+            Destroy(currentTetromino);
+            return;
+        }
+
+        for (int x = 0; x < gridObject.GetLength(0); x++)
+        {
+            for (int y = 0; y < gridObject.GetLength(1); y++)
+            {
+                if (!visited[x, y])
+                {
+                    Destroy(gridObject[x,y]);
+                }
+            }
+        }
+        return;
+        for (int i = 0; i < connectedGroup.Count; i++)
+        {
+            GameObject blockInstance = Instantiate(blockPrefab, currentTetromino.transform);
+            blockInstance.GetComponent<Block>().indexOffset = connectedGroup[i];
+            blockInstance.transform.localPosition = new Vector2(connectedGroup[i].x, connectedGroup[i].y) * gridManager.gridSizeScale;
+            blockInstance.SetActive(false);
+        }
+        currentTetromino.GetComponent<Tetromino>().gridManager = gridManager;
+        currentTetromino.GetComponent<Tetromino>().InitTetromino(new Vector2Int(currentSpawnSequence * gridSize, debugSpawnHeight));
+        currentSpawnSequence += 1;
+        currentSpawnSequence %= gridManager.gridColumnCount;
     }
 
     private void OnToggleUpdate(int toggleIndex, bool isToggleOn)
     {
         int x = toggleIndex % gridSize;
         int y = toggleIndex / gridSize;
-        //gridInt[x, y] = isToggleOn ? 1 : 0;
-        if (isToggleOn)
-        {
-            GameObject blockInstance = Instantiate(blockPrefab, currentTetromino.transform);
-            blockInstance.GetComponent<Block>().indexOffset = new Vector2Int(x, y);
-            blockInstance.transform.localPosition = new Vector2(x, y) * gridManager.gridSizeScale;
-        }
-        else
-        {
-            if (gridObject[x, y] != null)
-            {
-                Destroy(gridObject[x, y]);
-                gridObject[x, y] = null;
-            }
-        }
+        gridObject[x, y].SetActive(isToggleOn);
     }
 
     private void DFS(int x, int y, List<Vector2Int> positionList)
@@ -105,7 +112,7 @@ public class TetrominoSpawner : MonoBehaviour
             int nx = x + dx[i];
             int ny = y + dy[i];
 
-            if (nx >= 0 && ny >= 0 && nx < gridSize && ny < gridSize && gridObject[nx, ny] != null && !visited[nx, ny])
+            if (nx >= 0 && ny >= 0 && nx < gridSize && ny < gridSize && gridObject[nx, ny] != null && gridObject[nx, ny].activeSelf && !visited[nx, ny])
             {
                 DFS(nx, ny, positionList);
             }
@@ -120,7 +127,7 @@ public class TetrominoSpawner : MonoBehaviour
         {
             for (int x = 0; x < gridSize; x++)
             {
-                if (gridObject[x, y] != null && !visited[x, y])
+                if (gridObject[x, y] != null && gridObject[x, y].activeSelf && !visited[x, y])
                 {
                     DFS(x, y, pieceList);
                     return pieceList;
