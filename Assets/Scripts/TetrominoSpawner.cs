@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class TetrominoSpawner : MonoBehaviour
 {
+    [SerializeField] private int blockBuildingPhaseTime = 25;
     [SerializeField] private List<Toggle> toggleList;
     [SerializeField] private GameObject tetrominoPrefab;
     [SerializeField] private GameObject blockPrefab;
@@ -19,7 +20,12 @@ public class TetrominoSpawner : MonoBehaviour
     private void Start()
     {
         gridSize = gridManager.gridSize;
-        grid = new int[gridSize, gridSize];
+        grid = new int[gridSize, gridSize]; 
+        for (int i = 0; i < toggleList.Count; i++)
+        {
+            int index = i;
+            toggleList[i].onValueChanged.AddListener((isOn) => OnToggleUpdate(index, isOn));
+        }
     }
 
     private void Update()
@@ -27,12 +33,15 @@ public class TetrominoSpawner : MonoBehaviour
 
     }
 
+    private void OnToggleUpdate(int toggleIndex, bool isToggleOn)
+    {
+        int x = toggleIndex % gridSize;
+        int y = toggleIndex / gridSize;
+        grid[x, y] = isToggleOn ? 1 : 0;
+    }
+
     public void SpawnTetromino()
     {
-        for (int i = 0; i < toggleList.Count; i++)
-        {
-            grid[i % gridSize, i / gridSize] = toggleList[i].isOn ? 1 : 0;
-        }
         List<Vector2Int> connectedGroup = GetConnectedPiece();
         if (connectedGroup.Count == 0)
             return;
