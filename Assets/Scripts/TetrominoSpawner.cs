@@ -92,25 +92,25 @@ public class TetrominoSpawner : MonoBehaviour
         currentTetromino.GetComponent<Tetromino>().InitTetromino(new Vector2Int(currentSpawnSequence * gridSize, debugSpawnHeight));
         currentSpawnSequence += 1;
         currentSpawnSequence %= gridManager.gridColumnCount;
-        //ResetTetrominoBase();
+        ResetTetrominoBase();
         SpawnTetrominoBase();
     }
 
     private void ResetTetrominoBase()
     {
+        gridObject = new GameObject[gridSize, gridSize];
         for (int i = 0; i < toggleList.Count; i++)
         {
             toggleList[i].isOn = false;
         }
-
-        gridObject = new GameObject[gridSize, gridSize];
     }
 
     private void OnToggleUpdate(int toggleIndex, bool isToggleOn)
     {
         int x = toggleIndex % gridSize;
         int y = toggleIndex / gridSize;
-        gridObject[x, y].SetActive(isToggleOn);
+        if (gridObject[x, y] != null)
+            gridObject[x, y].SetActive(isToggleOn);
     }
 
     private void DFS(int x, int y, List<Vector2Int> positionList)
