@@ -1452,6 +1452,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c5df217bc2ef14d9425d2b48456bee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blockBuildingPhaseTime: 25
   toggleList:
   - {fileID: 66512450}
   - {fileID: 1265811450}
@@ -1472,7 +1473,6 @@ MonoBehaviour:
   tetrominoPrefab: {fileID: 4354999425665213100, guid: aba305fe3d42c1f40b3148a0b9a6dd9b, type: 3}
   blockPrefab: {fileID: 4713041661065697372, guid: 4acf7675f8cc3c8479ddd85bf87d78fd, type: 3}
   gridManager: {fileID: 127685931}
-  tetrominoSpawnIndex: {x: 4, y: 20}
 --- !u!4 &946132349
 Transform:
   m_ObjectHideFlags: 0
@@ -1995,7 +1995,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 946132348}
         m_TargetAssemblyTypeName: TetrominoSpawner, Assembly-CSharp
-        m_MethodName: SpawnTetromino
+        m_MethodName: FinaliseTetrominoBase
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3043,71 +3043,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8168278330167004489, guid: 91ac941a0398e484bb364543f02787eb, type: 3}
   m_PrefabInstance: {fileID: 220494401}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &5484711590602076735
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 67673017703383438, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 67673017703383438, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 67673017703383438, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67673017703383438, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 67673017703383438, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67673017703383438, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67673017703383438, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67673017703383438, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67673017703383438, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67673017703383438, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4354999425665213100, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
-      propertyPath: m_Name
-      value: Tetromino
-      objectReference: {fileID: 0}
-    - target: {fileID: 4354999425665213100, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6043143696897620241, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
-      propertyPath: gridManager
-      value: 
-      objectReference: {fileID: 127685931}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: ede622e3dbe649f4eb0e6fda4ca32446, type: 3}
 --- !u!1001 &5849214040454603907
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3211,7 +3146,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 127685932}
-  - {fileID: 5484711590602076735}
   - {fileID: 1753596053}
   - {fileID: 68089763}
   - {fileID: 946132349}
