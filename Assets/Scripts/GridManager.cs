@@ -54,10 +54,11 @@ public class GridManager : MonoBehaviour
             blockList[i].SetParent(this.transform);
         }
         CheckForLineClear();
-        if (CheckForLineExceeded())
-        {
-            Debug.Log("Game Over!");
-        }
+        CheckForRoundEnd();
+        //if (CheckForLineExceeded())
+        //{
+        //    Debug.Log("Game Over!");
+        //}
     }
 
     public bool IsInsideGrid(Vector2 posIndex)
@@ -79,6 +80,33 @@ public class GridManager : MonoBehaviour
                 ClearLine(y);
                 MoveAllLinesDown(y);
             }
+        }
+    }
+
+    private void CheckForRoundEnd()
+    {
+        int y = gameOverHeight;
+        for (int x = 0; x < width; x++)
+        {
+            if (grid[x, y] != null)
+            {
+                Debug.Log("Game Over!");
+                return;
+            }
+        }
+        bool isGameWon = true;
+        y = 0;
+        for (int x = 0; x < width; x++)
+        {
+            if (grid[x, y] != null)
+            {
+                isGameWon = false;
+                break;
+            }
+        }
+        if (isGameWon)
+        {
+            Debug.Log("Game Won!");
         }
     }
 
