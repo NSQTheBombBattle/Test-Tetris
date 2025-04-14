@@ -293,8 +293,7 @@ MonoBehaviour:
   - {fileID: 4354999425665213100, guid: 3fc77d4abd37a57439ba282b8178d2b5, type: 3}
   - {fileID: 4354999425665213100, guid: c19ee03d44189ff448e176b9ac26c726, type: 3}
   - {fileID: 4354999425665213100, guid: 608f2221f8ce90f4f8b3423aee48e63f, type: 3}
-  blockPrefab: {fileID: 4713041661065697372, guid: 4acf7675f8cc3c8479ddd85bf87d78fd, type: 3}
-  blockPrefab2: {fileID: 4713041661065697372, guid: 895b50b085b6eaf4ebe2c639d3bc501a, type: 3}
+  blockPrefab: {fileID: 4713041661065697372, guid: 895b50b085b6eaf4ebe2c639d3bc501a, type: 3}
   gameOverHeight: 20
   blockIndicatorPrefab: {fileID: 4713041661065697372, guid: 881a842b07084824e83318ba84e670ca, type: 3}
   blockIndicatorParent: {fileID: 710944422}
