@@ -15,7 +15,6 @@ public class GridManager : MonoBehaviour
     private int height = 25;
     public Transform[,] grid;
     public float gridSizeScale;
-    private List<Transform> targetBlockLocation = new List<Transform>();
     private List<Transform> occupiedBlockLocation = new List<Transform>();
 
     private void Awake()
@@ -131,7 +130,6 @@ public class GridManager : MonoBehaviour
         {
             Destroy(occupiedBlockLocation[i].gameObject);
         }
-        targetBlockLocation.Clear();
         occupiedBlockLocation.Clear();
 
         float yOffset = 0;
@@ -160,7 +158,6 @@ public class GridManager : MonoBehaviour
             }
             yOffset += gridSize * gridSizeScale;
         }
-        targetBlockLocation.Clear();
         AddBlockToGrid(Vector2Int.zero, occupiedBlockLocation);
     }
 }
