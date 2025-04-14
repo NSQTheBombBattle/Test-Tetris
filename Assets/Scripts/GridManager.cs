@@ -234,5 +234,6 @@ public class GridManager : MonoBehaviour
             yOffset += gridSize * gridSizeScale;
         }
         targetBlockLocation.Clear();
+        AddBlockToGrid(Vector2Int.zero, occupiedBlockLocation);
     }
 }
