@@ -55,10 +55,6 @@ public class GridManager : MonoBehaviour
         }
         CheckForLineClear();
         CheckForRoundEnd();
-        //if (CheckForLineExceeded())
-        //{
-        //    Debug.Log("Game Over!");
-        //}
     }
 
     public bool IsInsideGrid(Vector2 posIndex)
@@ -90,34 +86,30 @@ public class GridManager : MonoBehaviour
         {
             if (grid[x, y] != null)
             {
-                Debug.Log("Game Over!");
+                GameOver();
                 return;
             }
         }
-        bool isGameWon = true;
+
         y = 0;
         for (int x = 0; x < width; x++)
         {
             if (grid[x, y] != null)
             {
-                isGameWon = false;
-                break;
+                return;
             }
         }
-        if (isGameWon)
-        {
-            Debug.Log("Game Won!");
-        }
+        GameWon();
     }
 
-    private bool CheckForLineExceeded()
+    private void GameOver()
     {
-        for (int y = gameOverHeight; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-                if (grid[x, y] != null) return true;
-        }
-        return false;
+        Debug.Log("Game Over!");
+    }
+
+    private void GameWon()
+    {
+        Debug.Log("Game Won!");
     }
 
     private bool IsLineComplete(int y)
