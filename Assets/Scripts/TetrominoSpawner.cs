@@ -48,7 +48,7 @@ public class TetrominoSpawner : MonoBehaviour
     {
         currentTetromino = Instantiate(tetrominoPrefab, transform);
         currentTetromino.GetComponent<Tetromino>().enabled = false;
-        currentTetromino.transform.position = new Vector3(currentSpawnSequence * gridSize, debugSpawnHeight, 0);
+        currentTetromino.transform.position = new Vector3(currentSpawnSequence * gridSize * gridManager.gridSizeScale, debugSpawnHeight, 0);
         for (int y = 0; y < gridSize; y++)
         {
             for (int x = 0; x < gridSize; x++)
